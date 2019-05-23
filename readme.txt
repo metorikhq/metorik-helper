@@ -120,6 +120,9 @@ To hide the links from individual orders/products, you can click the 'Screen Opt
 We all make mistakes. To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes while logged in as an administrator.
 
 == Changelog ==
+= 1.3.0 =
+* Improvements to sending guest carts.
+
 = 1.2.0 =
 * Additional WooCommerce 3.6 fixes for coupon applying.
 

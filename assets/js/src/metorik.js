@@ -66,7 +66,6 @@
 
                 var data = {
                     action: 'metorik_send_cart',
-                    security: metorik_params.nonce,
                     email: email,
                     name: name,
                 };
@@ -189,7 +188,6 @@
                         // Make an AJAX request to set the add cart form as 'seen'.
                         var data = {
                             action: 'metorik_add_cart_form_seen',
-                            security: metorik_params.nonce,
                         };
 
                         $.post(metorik_params.ajaxurl, data, function (response) {
@@ -244,7 +242,6 @@
 
             var data = {
                 action: 'metorik_email_opt_out',
-                security: metorik_params.nonce,
             };
 
             $.post(metorik_params.ajaxurl, data, function(response) {

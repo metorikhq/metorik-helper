@@ -158,8 +158,6 @@ class Metorik_Helper_Carts
      */
     public function ajax_set_seen_add_cart_form()
     {
-        check_ajax_referer('metorik-js', 'security');
-
         WC()->session->set('metorik_seen_add_to_cart_form', true);
     }
 
@@ -168,8 +166,6 @@ class Metorik_Helper_Carts
      */
     public function ajax_email_opt_out()
     {
-        check_ajax_referer('metorik-js', 'security');
-
         $this->set_customer_email_opt_out(true);
     }
 
@@ -239,8 +235,6 @@ class Metorik_Helper_Carts
      */
     public function ajax_send_cart()
     {
-        check_ajax_referer('metorik-js', 'security');
-
         // metorik auth token? if none, stop
         $metorik_auth_token = get_option('metorik_auth_token');
         if (!$metorik_auth_token) {
