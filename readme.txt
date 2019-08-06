@@ -1,7 +1,8 @@
 === Metorik - Reports & Email Automation for WooCommerce ===
 Contributors: bryceadams, metorik
-Tags: woocommerce, woocommerce analytics, woocommerce reports, woocommerce filtering, woocommerce google analytics, woocommerce zendesk, woocommerce help scout, woocommerce freshdesk, woocommerce support, subscription reports, woo reports
+Tags: woocommerce, woocommerce reports, woocommerce emails, woocommerce abandoned carts, woocommerce carts,  woocommerce filtering, woocommerce google analytics, woocommerce zendesk, woocommerce help scout, woocommerce freshdesk, woocommerce support, woocommerce analytics, subscription reports, woo reports, woocommerce email, woocommerce email automation, woocommerce cart emails, woocommerce export, woocommerce csv 
 Requires at least: 4.4.0
+Requires PHP: 5.2.0
 Tested up to: 5.2.2
 Stable tag: trunk
 License: MIT
