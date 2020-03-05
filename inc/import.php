@@ -18,11 +18,11 @@ class Metorik_Import_Helpers
      */
     public function maybe_filter_customers($server)
     {
-        // get headers
-        $headers = $server->get_headers($_SERVER);
+        // get headers if have server and server is an object (eg. not a string)
+        $headers = $server && is_object($server) ? $server->get_headers($_SERVER) : false;
 
-        // if metorik user agent, filter user meta to stop total spend/order count calculations
-        if (metorik_check_headers_agent($headers)) {
+        // if headers and have metorik user agent, filter user meta to stop total spend/order count calculations
+        if ($headers && metorik_check_headers_agent($headers)) {
             add_filter('get_user_metadata', array($this, 'filter_user_metadata'), 10, 4);
         } else {
             // or as a backup method - check if no spend data param is set
