@@ -143,7 +143,8 @@ class Metorik_Helper_API_Subscriptions extends WC_REST_Posts_Controller
 					AND post_modified > %s
 					AND post_status != 'trash'
 				LIMIT %d, %d
-			", array(
+			",
+            array(
                 $from,
                 $offset,
                 $limit,
@@ -194,7 +195,8 @@ class Metorik_Helper_API_Subscriptions extends WC_REST_Posts_Controller
 					meta_value
 				FROM $wpdb->postmeta
 				WHERE post_id = %d 
-			", array(
+			",
+            array(
                 $id,
             )
         ));

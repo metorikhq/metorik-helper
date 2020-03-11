@@ -142,7 +142,8 @@ class Metorik_Helper_API_Coupons extends WC_REST_Posts_Controller
 					AND post_modified > %s
 					AND post_status != 'trash'
 				LIMIT %d, %d
-			", array(
+			",
+            array(
                 $from,
                 $offset,
                 $limit,
