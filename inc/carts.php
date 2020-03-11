@@ -690,8 +690,10 @@ class Metorik_Helper_Carts
     public function render_email_usage_notice()
     {
         /* translators: Placeholders: %1$s - opening HTML <a> link tag, %2$s - closing HTML </a> link tag */
-        $notice = sprintf(__('We save your email and cart so we can send you reminders - %1$sdon\'t email me%2$s.', 'metorik'),
-            '<a href="#" class="metorik-email-usage-notice-link">', '</a>'
+        $notice = sprintf(
+            __('We save your email and cart so we can send you reminders - %1$sdon\'t email me%2$s.', 'metorik'),
+            '<a href="#" class="metorik-email-usage-notice-link">',
+            '</a>'
         );
 
         /**

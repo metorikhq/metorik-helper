@@ -271,7 +271,8 @@ class Metorik_Helper_API_Customers extends WC_REST_Posts_Controller
 						AND b.meta_value > %d
 					WHERE a.meta_key = %s 
 					LIMIT %d, %d
-				", array(
+				",
+                array(
                     $time,
                     $cap_column,
                     $offset,
@@ -289,7 +290,8 @@ class Metorik_Helper_API_Customers extends WC_REST_Posts_Controller
 					WHERE meta_key = 'last_update' 
 						AND meta_value > %d
 					LIMIT %d, %d
-				", array(
+				",
+                array(
                     $time,
                     $offset,
                     $limit,
