@@ -3,7 +3,7 @@ Contributors: bryceadams, metorik
 Tags: woocommerce, woocommerce reports, woocommerce emails, woocommerce abandoned carts, woocommerce carts,  woocommerce filtering, woocommerce google analytics, woocommerce zendesk, woocommerce help scout, woocommerce freshdesk, woocommerce support, woocommerce analytics, subscription reports, woo reports, woocommerce email, woocommerce email automation, woocommerce cart emails, woocommerce export, woocommerce csv 
 Requires at least: 4.4.0
 Requires PHP: 5.6.20
-Tested up to: 5.3.2
+Tested up to: 5.4.0
 Stable tag: trunk
 License: MIT
 License URI: https://opensource.org/licenses/MIT
