@@ -124,7 +124,7 @@ We all make mistakes. To get them back, go to http://yoursite.com/wp-admin?show-
 = 1.4.0 =
 * Improve cart tracking performance.
 * Added a setting (to Metorik) for customising the checkout URL for cart recoveries.
-* Bug fix to stop an error from occuring if no server object exists when we filter the WP API.
+* Bug fix to stop an error from occurring if no server object exists when we filter the WP API.
 
 = 1.3.0 =
 * Improvements to sending guest carts.
