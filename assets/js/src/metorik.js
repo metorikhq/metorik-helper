@@ -85,12 +85,43 @@
         };
 
         /**
-         * Listen for events then send cart data.
+         * Listen for cart change events then send cart data.
          */
         $(document.body).on(
-            'wc_fragments_refreshed added_to_cart removed_from_cart updated_cart_totals updated_shipping_method applied_coupon removed_coupon updated_checkout',
-            function(event) {
+            'added_to_cart removed_from_cart updated_cart_totals updated_shipping_method applied_coupon removed_coupon updated_checkout',
+            function (event) {
                 sendCartData();
+            }
+        );
+
+        /**
+         * Watch for fragments separate and determine if have data to send.
+         * As this event may trigger with no items in cart (initial page
+         * load) but no need to send cart then. So we check for items.
+         */
+        
+        $(document.body).on(
+            'wc_fragments_refreshed',
+            function(event) {
+                // Only continue if wc_cart_fragments_params defined
+                if (wc_cart_fragments_params) {
+                    // Get cart hash key from wc_cart_fragments_params variable
+                    var cart_hash_key = wc_cart_fragments_params.cart_hash_key;
+
+                    try {
+                        // Get local storage and session storage for cart dash
+                        var localStorageItem = localStorage.getItem(cart_hash_key)
+                        var sessionStorageItem = sessionStorage.getItem(cart_hash_key)
+
+                        // Check if have local storage or session storage
+                        if (localStorageItem || sessionStorageItem) {
+                            // Have items so we'll send the cart data now
+                            sendCartData();
+                        }
+                    } catch (e) {
+
+                    }
+                }
             }
         );
 

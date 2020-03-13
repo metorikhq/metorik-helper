@@ -121,7 +121,9 @@ To hide the links from individual orders/products, you can click the 'Screen Opt
 We all make mistakes. To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes while logged in as an administrator.
 
 == Changelog ==
-= 1.3.1 =
+= 1.4.0 =
+* Improve cart tracking performance.
+* Added a setting (to Metorik) for customising the checkout URL for cart recoveries.
 * Bug fix to stop an error from occuring if no server object exists when we filter the WP API.
 
 = 1.3.0 =
