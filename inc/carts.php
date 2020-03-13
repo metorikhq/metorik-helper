@@ -248,7 +248,7 @@ class Metorik_Helper_Carts
         $email = isset($_POST['email']) && $_POST['email'] ? sanitize_email($_POST['email']) : null;
         $name = isset($_POST['name']) && $_POST['name'] ? sanitize_text_field($_POST['name']) : null;
 
-        // if no cart, stop
+        // if no cart, stop (empty cart clearing is handled with separate action/method in this class)
         if (!$cart) {
             return;
         }
@@ -462,8 +462,16 @@ class Metorik_Helper_Carts
             // cart start
             $this->check_prerequisites();
 
-            // base checkout url - filterable
-            $checkout_url = apply_filters('metorik_recover_cart_url', wc_get_checkout_url());
+            // base checkout url - default is the woo checkout url
+            $checkout_url = wc_get_checkout_url();
+
+            // if setting for it, use that
+            if ($this->get_cart_setting('checkout_url')) {
+                $checkout_url = $this->get_cart_setting('checkout_url');
+            }
+
+            // finally, allow the url to be filtered for more advanced customising
+            $checkout_url = apply_filters('metorik_recover_cart_url', $checkout_url);
 
             // forward along any UTM or metorik params
             foreach ($request->get_params() as $key => $val) {
