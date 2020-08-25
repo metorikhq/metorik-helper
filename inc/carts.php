@@ -447,8 +447,8 @@ class Metorik_Helper_Carts
     public function api_recover_cart_route()
     {
         register_rest_route('metorik/v1', '/recover-cart', array(
-            'methods'  => 'GET',
-            'callback' => array($this, 'recover_cart_callback'),
+            'methods'             => 'GET',
+            'callback'            => array($this, 'recover_cart_callback'),
             'permission_callback' => '__return_true',
         ));
     }
