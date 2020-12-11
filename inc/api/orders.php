@@ -168,6 +168,7 @@ class Metorik_Helper_API_Orders extends WC_REST_Posts_Controller
 					AND post_modified > %s
 					AND post_status != 'trash'
 					AND post_status != 'draft'
+					AND post_status != 'checkout-draft'
 				LIMIT %d, %d
 			",
             array(
