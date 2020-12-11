@@ -67,6 +67,14 @@ class Metorik_Custom
          */
         wp_enqueue_style('metorik-css', plugins_url('assets/css/metorik.css', dirname(__FILE__)), '', $this->version);
 
+        /*
+         * Prepare cart items - possible to disable through a filter.
+         */
+        $cart_items = 0;
+        if (apply_filters('metorik_cart_items', true)) {
+            $cart_items = WC()->cart ? WC()->cart->get_cart_contents_count() : 0;
+        }
+
         /**
          * Pass parameters to Metorik JS.
          */
@@ -75,7 +83,7 @@ class Metorik_Custom
             'session'                  => (int) apply_filters('metorik_session_length', 30), // 30 minutes
             'ajaxurl'                  => admin_url('admin-ajax.php'),
             'cart_tracking'            => get_option('metorik_auth_token') ? true : false,
-            'cart_items'               => WC()->cart ? WC()->cart->get_cart_contents_count() : 0,
+            'cart_items'               => $cart_items,
             'cart_checkout_button'     => apply_filters('metorik_acp_checkout_button', true),
             'add_cart_popup_placement' => apply_filters('metorik_acp_placement', 'bottom'),
         );
