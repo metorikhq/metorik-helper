@@ -3,7 +3,7 @@ Contributors: bryceadams, metorik
 Tags: woocommerce, woocommerce reports, woocommerce emails, woocommerce abandoned carts, woocommerce carts,  woocommerce filtering, woocommerce google analytics, woocommerce zendesk, woocommerce help scout, woocommerce freshdesk, woocommerce support, woocommerce analytics, subscription reports, woo reports, woocommerce email, woocommerce email automation, woocommerce cart emails, woocommerce export, woocommerce csv 
 Requires at least: 4.4.0
 Requires PHP: 5.6.20
-Tested up to: 5.4.1
+Tested up to: 5.6.0
 Stable tag: trunk
 License: MIT
 License URI: https://opensource.org/licenses/MIT
@@ -121,6 +121,9 @@ To hide the links from individual orders/products, you can click the 'Screen Opt
 We all make mistakes. To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes while logged in as an administrator.
 
 == Changelog ==
+= 1.4.1 =
+* Fix PHP notice with WP 5.5 and REST API changes.
+
 = 1.4.0 =
 * Improve cart tracking performance.
 * Added a setting (to Metorik) for customising the checkout URL for cart recoveries.
