@@ -155,22 +155,25 @@ class Metorik_Helper_API_Orders extends WC_REST_Posts_Controller
             $offset = intval($request['offset']);
         }
 
+        $query = apply_filters(
+            'metorik_orders_updated_query',
+            "SELECT 
+                id,
+                UNIX_TIMESTAMP(CONVERT_TZ(post_modified_gmt, '+00:00', @@session.time_zone)) as last_updated
+            FROM $wpdb->posts
+            WHERE post_type = 'shop_order' 
+                AND post_modified > %s
+                AND post_status != 'trash'
+                AND post_status != 'draft'
+                AND post_status != 'checkout-draft'
+            LIMIT %d, %d"
+        );
+
         /**
          * Get orders where the date modified is greater than x days ago and not trashed.
          */
         $orders = $wpdb->get_results($wpdb->prepare(
-            "
-				SELECT 
-					id,
-					UNIX_TIMESTAMP(CONVERT_TZ(post_modified_gmt, '+00:00', @@session.time_zone)) as last_updated
-				FROM $wpdb->posts
-				WHERE post_type = 'shop_order' 
-					AND post_modified > %s
-					AND post_status != 'trash'
-					AND post_status != 'draft'
-					AND post_status != 'checkout-draft'
-				LIMIT %d, %d
-			",
+            $query,
             array(
                 $from,
                 $offset,
