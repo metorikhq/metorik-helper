@@ -156,7 +156,7 @@ class Metorik_Helper_API_Orders extends WC_REST_Posts_Controller
         }
 
         $query = apply_filters(
-            'metorik_orders_updated_query', 
+            'metorik_orders_updated_query',
             "SELECT 
                 id,
                 UNIX_TIMESTAMP(CONVERT_TZ(post_modified_gmt, '+00:00', @@session.time_zone)) as last_updated
