@@ -247,6 +247,7 @@ class Metorik_Helper_Carts
         $customer_id = get_current_user_id();
         $email = isset($_POST['email']) && $_POST['email'] ? sanitize_email($_POST['email']) : null;
         $name = isset($_POST['name']) && $_POST['name'] ? sanitize_text_field($_POST['name']) : null;
+        $phone = isset($_POST['phone']) && $_POST['phone'] ? sanitize_text_field($_POST['phone']) : null;
 
         // if no cart, stop (empty cart clearing is handled with separate action/method in this class)
         if (!$cart) {
@@ -268,6 +269,7 @@ class Metorik_Helper_Carts
                 'customer_id'       => $customer_id,
                 'email'             => $email,
                 'name'              => $name,
+                'phone'             => $phone,
                 'email_opt_out'     => $this->get_customer_email_opt_out(),
                 'client_session'    => $this->get_client_session_data(),
             ),
