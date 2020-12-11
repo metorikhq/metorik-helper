@@ -125,6 +125,7 @@ We all make mistakes. To get them back, go to http://yoursite.com/wp-admin?show-
 * Added a filter 'metorik_cart_items', which can be used to disable Metorik's cart items count code.
 * Don't include checkout-draft orders in updated endpoints.
 * Added a filter 'metorik_orders_updated_query', which can be used for modifying the 'orders/updated' API endpoint query.
+* Send phone numbers with carts.
 
 = 1.4.1 =
 * Fix PHP notice with WP 5.5 and REST API changes.

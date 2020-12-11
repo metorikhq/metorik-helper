@@ -63,11 +63,13 @@
                 }
 
                 var name = $('#billing_first_name').val();
+                var phone = $('#billing_phone').val();
 
                 var data = {
                     action: 'metorik_send_cart',
                     email: email,
                     name: name,
+                    phone: phone,
                 };
 
                 $.post(metorik_params.ajaxurl, data, function (response) {
@@ -144,7 +146,7 @@
          * Watch for name input changes.
          */
         var name_input_timer;
-        $('#billing_first_name').bind('blur', function (e) {
+        $('#billing_first_name, #billing_phone').bind('blur', function (e) {
             var _this = $(this);
 
             clearTimeout(name_input_timer);
