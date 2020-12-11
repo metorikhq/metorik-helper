@@ -121,6 +121,9 @@ To hide the links from individual orders/products, you can click the 'Screen Opt
 We all make mistakes. To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes while logged in as an administrator.
 
 == Changelog ==
+= 1.5.0 =
+* Added a filter 'metorik_cart_items', which can be used to disable Metorik's cart items count code.
+
 = 1.4.1 =
 * Fix PHP notice with WP 5.5 and REST API changes.
 
