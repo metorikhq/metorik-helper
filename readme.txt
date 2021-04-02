@@ -76,9 +76,9 @@ Any data can be exported from Metorik at any time in minutes. You can even sched
 
 Metorik integrates seamlessly with [WooCommerce Subscriptions](https://metorik.com/go/subscriptions), offering subscription filtering & exporting, along with reports like MRR, Churn, Retention, Forecasting, and more. You can even have an automated subscriptions report sent to you every day summarising everything subscriptions-related.
 
-= Live chat support =
+= Fast support =
 
-Support is available through live chat to every Metorik user. Metorik's founder - [Bryce](https://twitter.com/bryceadams) - will personally work with you to ensure you and your team get the most out of Metorik.
+Support is available to every Metorik user, whether you're just starting your trial or have used us for years. We'll personally work with you to ensure you and your team get the most out of Metorik.
 
 = Bring your team =
 
