@@ -75,7 +75,7 @@
                 $.post(metorik_params.ajaxurl, data, function (response) {
                     //
                 });
-            }, 500);
+            }, 1000);
         };
 
         /**
@@ -90,7 +90,7 @@
          * Listen for cart change events then send cart data.
          */
         $(document.body).on(
-            'added_to_cart removed_from_cart updated_cart_totals updated_shipping_method applied_coupon removed_coupon updated_checkout',
+            metorik_params.send_cart_events,
             function (event) {
                 sendCartData();
             }
