@@ -224,6 +224,14 @@ class Metorik_UI
                                 ),
                             );
                             break;
+                        case 'shop_subscription':
+                            $links = array(
+                                array(
+                                    'report' => 'All Subscriptions',
+                                    'link'   => 'subscriptions',
+                                ),
+                            );
+                            break;
                         case 'product':
                             $links = array(
                                 array(
@@ -276,6 +284,12 @@ class Metorik_UI
                 // dismiss url and link
                 global $wp;
                 $current_url = add_query_arg($wp->query_string, '', home_url($wp->request));
+
+                // for users, just set current url manually as doesn't work with above method
+                if ($screen && $screen == 'users') {
+                    $current_url = admin_url('users.php');
+                }
+
                 $dismiss_url = add_query_arg('dismiss-metorik-notices', 'yes', $current_url);
                 $dismiss_url = wp_nonce_url($dismiss_url, 'dismiss-metorik-notices');
                 echo '<a href="'.esc_url($dismiss_url).'" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></a>';
