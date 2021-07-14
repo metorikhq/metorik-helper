@@ -8,7 +8,7 @@ class Metorik_Custom
     /**
      * Current version of Metorik.
      */
-    public $version = '1.5.0';
+    public $version = '1.5.1';
 
     /**
      * Possible fields.

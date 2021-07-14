@@ -123,6 +123,7 @@ We all make mistakes. To get them back, go to http://yoursite.com/wp-admin?show-
 == Changelog ==
 = 1.5.1 =
 * Added a filter 'metorik_send_cart_events', which can be used for changing which WooCommerce events trigger carts to be sent to Metorik.
+* Fixed bug with Metorik's admin notice on users page and subscriptions page.
 
 = 1.5.0 =
 * Added a filter 'metorik_cart_items', which can be used to disable Metorik's cart items count code.
