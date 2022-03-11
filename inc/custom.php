@@ -57,7 +57,7 @@ class Metorik_Custom
      */
     public function scripts_styles()
     {
-        // @temp 
+        // @temp
         //wp_deregister_script('jquery');
 
         /*
