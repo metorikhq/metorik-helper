@@ -1,4 +1,4 @@
-(function($) {
+document.addEventListener("DOMContentLoaded", function(event) {
     /**
      * Initialize sourcebuster.js.
      */
@@ -12,36 +12,37 @@
      * Set values.
      */
     var setFields = function() {
-        if (sbjs.get) {
-            $('input[name="metorik_source_type"]').val(sbjs.get.current.typ);
-            $('input[name="metorik_source_url"]').val(sbjs.get.current_add.rf);
-            $('input[name="metorik_source_mtke"]').val(sbjs.get.current.mtke);
+        // only continue with sbjs data and at least the first input field being present
+        if (sbjs.get && document.querySelector('input[name="metorik_source_type"]')) {
+            document.querySelector('input[name="metorik_source_type"]').value = sbjs.get.current.typ;
+            document.querySelector('input[name="metorik_source_url"]').value = sbjs.get.current_add.rf;
+            document.querySelector('input[name="metorik_source_mtke"]').value = sbjs.get.current.mtke;
 
-            $('input[name="metorik_source_utm_campaign"]').val(sbjs.get.current.cmp);
-            $('input[name="metorik_source_utm_source"]').val(sbjs.get.current.src);
-            $('input[name="metorik_source_utm_medium"]').val(sbjs.get.current.mdm);
-            $('input[name="metorik_source_utm_content"]').val(sbjs.get.current.cnt);
-            $('input[name="metorik_source_utm_id"]').val(sbjs.get.current.id);
-            $('input[name="metorik_source_utm_term"]').val(sbjs.get.current.trm);
+            document.querySelector('input[name="metorik_source_utm_campaign"]').value = sbjs.get.current.cmp;
+            document.querySelector('input[name="metorik_source_utm_source"]').value = sbjs.get.current.src;
+            document.querySelector('input[name="metorik_source_utm_medium"]').value = sbjs.get.current.mdm;
+            document.querySelector('input[name="metorik_source_utm_content"]').value = sbjs.get.current.cnt;
+            document.querySelector('input[name="metorik_source_utm_id"]').value = sbjs.get.current.id;
+            document.querySelector('input[name="metorik_source_utm_term"]').value = sbjs.get.current.trm;
 
-            $('input[name="metorik_source_session_entry"]').val(sbjs.get.current_add.ep);
-            $('input[name="metorik_source_session_start_time"]').val(sbjs.get.current_add.fd);
-            $('input[name="metorik_source_session_pages"]').val(sbjs.get.session.pgs);
-            $('input[name="metorik_source_session_count"]').val(sbjs.get.udata.vst);
+            document.querySelector('input[name="metorik_source_session_entry"]').value = sbjs.get.current_add.ep;
+            document.querySelector('input[name="metorik_source_session_start_time"]').value = sbjs.get.current_add.fd;
+            document.querySelector('input[name="metorik_source_session_pages"]').value = sbjs.get.session.pgs;
+            document.querySelector('input[name="metorik_source_session_count"]').value = sbjs.get.udata.vst;
         }
     };
 
     /**
      * Add source values to checkout.
      */
-    $(document.body).on('init_checkout', function(event) {
+    document.body.addEventListener('init_checkout', function(event) {
         setFields();
     });
 
     /**
      * Add source values to register.
      */
-    if ($('.woocommerce form.register').length) {
+    if (document.querySelector('.woocommerce form.register')) {
         setFields();
     }
 
@@ -57,22 +58,24 @@
         var sendCartData = function(customEmail) {
             clearTimeout(cartTimer);
             cartTimer = setTimeout(function () {
-                var email = isValidEmail($('#billing_email').val()) ? $('#billing_email').val() : null;
+                // get email
+                var email = document.querySelector('#billing_email') ? document.querySelector('#billing_email').value : null;
+                email = isValidEmail(email) ? email : null;
+
                 if (customEmail) {
                     email = customEmail;
                 }
 
-                var name = $('#billing_first_name').val();
-                var phone = $('#billing_phone').val();
+                var name = document.querySelector('#billing_first_name') ? document.querySelector('#billing_first_name').value : null;
+                var phone = document.querySelector('#billing_phone') ? document.querySelector('#billing_phone').value : null;
 
-                var data = {
-                    action: 'metorik_send_cart',
-                    email: email,
-                    name: name,
-                    phone: phone,
-                };
+                var form_data = new FormData;
+                form_data.append('action', 'metorik_send_cart');
+                form_data.append('email', email);
+                form_data.append('name', name);
+                form_data.append('phone', phone);
 
-                $.post(metorik_params.ajaxurl, data, function (response) {
+                axios.post(metorik_params.ajaxurl, form_data, function (response) {
                     //
                 });
             }, 1000);
@@ -86,24 +89,98 @@
             return /[^\s@]+@[^\s@]+\.[^\s@]+/.test(email);
         };
 
+
+        /**
+         * Listen for closing the add cart email form tippy.
+         */
+        var setupCartEmailCloseWatcher = function() {
+            if (document.querySelector('.metorik-add-cart-email-form .close-button')) {
+                document.querySelector('.metorik-add-cart-email-form .close-button')
+                    .addEventListener('click', function(e) {
+                        e.preventDefault();
+
+                        // close/hide tippy if have
+                        var button = document.querySelector('.tippy-active');
+                        if (button && button._tippy) {
+                            button._tippy.hide();
+                        }
+                    });
+                }
+        }
+
+        /**
+         * Listen for add cart email input changes.
+         */
+        var setupCartEmailInputWatcher = function() {
+            if (document.querySelector('.metorik-add-cart-email-form .email-input')) {
+                var addCartTimer;
+                //if (typeof(document.querySelector('.metorik-add-cart-email-form .email-input').input) == "undefined") {
+                    document.querySelector('.metorik-add-cart-email-form .email-input')
+                        .addEventListener('input', function(e) {
+                            var _this = e.target;
+                            var _wrapper = _this.parentElement;
+
+                            // clear classes on input change
+                            _wrapper.classList.remove('success');
+
+                            clearTimeout(addCartTimer);
+                            addCartTimer = setTimeout(function() {
+                                if (isValidEmail(_this.value)) {
+                                    _wrapper.classList.add('success');
+                                    sendCartData(_this.value);
+                                }
+                            }, 500);
+                        });
+                //}
+            }
+        }
+
+        /**
+         * Listen for email usage opt-out clicks and send AJAX request to do so.
+         */
+        var setupEmailUsageNoticeWatcher = function() {
+            if (document.querySelector('.metorik-email-usage-notice-link')) {
+                document.querySelector('.metorik-email-usage-notice-link')
+                    .addEventListener('click', function(e) {
+                        e.preventDefault();
+
+                        // loading
+                        document.querySelector('.metorik-email-usage-notice').style.opacity = '0.5';
+                        document.querySelector('.metorik-email-usage-notice').style['pointer-events'] = 'none';
+
+                        var form_data = new FormData;
+                        form_data.append('action', 'metorik_email_opt_out');
+                        
+                        axios.post(metorik_params.ajaxurl, form_data, function(response) {
+                            // hide email usage notice
+                            document.querySelector('.metorik-email-usage-notice').style.display = 'none';
+
+                            // close/hide tippy if have
+                            var button = document.querySelector('.tippy-active');
+                            if (button && button._tippy) {
+                                button._tippy.hide();
+                            }
+
+                            // send cart so we can send email opted out
+                            sendCartData();
+                        });
+                    });
+            }
+        }
+
         /**
          * Listen for cart change events then send cart data.
          */
-        $(document.body).on(
-            metorik_params.send_cart_events,
-            function (event) {
-                sendCartData();
-            }
-        );
+        metorik_params.send_cart_events.split(' ').forEach(function(event) {
+            document.body.addEventListener(event, sendCartData);
+        })
 
         /**
          * Watch for fragments separate and determine if have data to send.
          * As this event may trigger with no items in cart (initial page
          * load) but no need to send cart then. So we check for items.
          */
-        
-        $(document.body).on(
-            'wc_fragments_refreshed',
+        document.body.addEventListener('wc_fragments_refreshed',
             function(event) {
                 // Only continue if wc_cart_fragments_params defined
                 if (wc_cart_fragments_params) {
@@ -131,36 +208,48 @@
          * Watch for email input changes.
          */
         var email_input_timer;
-        $('#billing_email, .metorik-capture-guest-email').bind('blur', function(e) {
-            var _this = $(this);
+        var handleEmailInputChanges = function(e) {
+            var _this = e.target;
 
             clearTimeout(email_input_timer);
             email_input_timer = setTimeout(function() {
-                if (isValidEmail(_this.val())) {
-                    sendCartData(_this.val());
+                if (isValidEmail(_this.value)) {
+                    sendCartData(_this.value);
                 }
             }, 500);
-        });
+        }
+        if (document.querySelector('#billing_email')) {
+            document.querySelector('#billing_email').addEventListener('blur', handleEmailInputChanges);
+        }
+        if (document.querySelector('.metorik-capture-guest-email')) {
+            document.querySelector('.metorik-capture-guest-email').addEventListener('blur', handleEmailInputChanges);
+        }
 
         /**
          * Watch for name input changes.
          */
         var name_input_timer;
-        $('#billing_first_name, #billing_phone').bind('blur', function (e) {
-            var _this = $(this);
+        var handleNameInputChanges = function(e) {
+            var _this = e.target;
 
             clearTimeout(name_input_timer);
             name_input_timer = setTimeout(function () {
                 sendCartData();
             }, 500);
-        });
+        };
+        if (document.querySelector('#billing_first_name')) {
+            document.querySelector('#billing_first_name').addEventListener('blur', handleNameInputChanges);
+        }
+        if (document.querySelector('#billing_phone')) {
+            document.querySelector('#billing_phone').addEventListener('blur', handleNameInputChanges);
+        }
 
         /**
          * Popup to capture email when added to cart (if wrapper class exists/output on page).
          */
         var addToCartSeen = false;
-
-        if ($('.add-cart-email-wrapper').length) {
+        var addCartEmailWrapper = document.querySelector('.add-cart-email-wrapper');
+        if (addCartEmailWrapper) {
             // classes/buttons that we're targeting
             var classes = [
                 '.button.ajax_add_to_cart',
@@ -173,27 +262,25 @@
             }
 
             // listen for page reloads after products added to the cart
-            $(document.body).on(
-                'wc_fragments_refreshed',
-                function (e) {
-                    // only if cart items 1 or more
-                    if (metorik_params.cart_items >= 1) {
-                        // show tippy on add cart button
-                        var singleButton = $('.single_add_to_cart_button');
-                        if (singleButton.length) {
-                            singleButton[0]._tippy.show();
-                        }
+            document.body.addEventListener('wc_fragments_refreshed', function (e) {
+                console.log('in here');
+                // only if cart items 1 or more
+                if (metorik_params.cart_items >= 1) {
+                    // show tippy on add cart button
+                    var singleButton = document.querySelector('.single_add_to_cart_button');
+                    if (singleButton) {
+                        singleButton._tippy.show();
+                    }
 
-                        // show tippy on cart update button (if cart checkout button enabled)
-                        if (metorik_params.cart_checkout_button) {
-                            var cartButton = $('.button.checkout-button');
-                            if (cartButton.length) {
-                                cartButton[0]._tippy.show();
-                            }
+                    // show tippy on cart update button (if cart checkout button enabled)
+                    if (metorik_params.cart_checkout_button) {
+                        var cartButton = document.querySelector('.button.checkout-button');
+                        if (cartButton) {
+                            cartButton._tippy.show();
                         }
                     }
                 }
-            );
+            });
 
             // add tippy for each class
             classes.forEach(function(c) {
@@ -215,81 +302,21 @@
                         }
                     },
                     onShow: function () {
+                        setupCartEmailInputWatcher();
+
                         // Set the add to cart fomr as having been senen so it doesn't get shown again.
                         addToCartSeen = true;
 
                         // Make an AJAX request to set the add cart form as 'seen'.
-                        var data = {
-                            action: 'metorik_add_cart_form_seen',
-                        };
+                        var form_data = new FormData;
+                        form_data.append('action', 'metorik_add_cart_form_seen');
 
-                        $.post(metorik_params.ajaxurl, data, function (response) {
+                        axios.post(metorik_params.ajaxurl, form_data, function (response) {
                             //
                         });
                     },
                 });
             });
         }
-
-        /**
-         * Listen for closing the add cart email form tippy.
-         */
-        $(document).on('click', '.metorik-add-cart-email-form .close-button', function (e) {
-            e.preventDefault();
-
-            // close/hide tippy if have
-            var button = $('.tippy-active');
-            if (button.length && button[0]._tippy) {
-                button[0]._tippy.hide();
-            }
-        });
-
-        /**
-         * Listen for add cart email input changes.
-         */
-        var addCartTimer;
-        $(document).on('input', '.metorik-add-cart-email-form .email-input', function(e) {
-            var _this = $(this);
-            var _wrapper = _this.parent();
-
-            // clear classes on input change
-            _wrapper.removeClass('success');
-
-            clearTimeout(addCartTimer);
-            addCartTimer = setTimeout(function() {
-                if (isValidEmail(_this.val())) {
-                    _wrapper.addClass('success');
-                    sendCartData(_this.val());
-                }
-            }, 500);
-        });
-
-        /**
-         * Listen for email usage opt-out clicks and send AJAX request to do so.
-         */
-        $(document).on('click', '.metorik-email-usage-notice-link', function(e) {
-            e.preventDefault();
-
-            // loading
-            $('.metorik-email-usage-notice').css({ opacity: '0.5', 'pointer-events': 'none' });
-
-            var data = {
-                action: 'metorik_email_opt_out',
-            };
-
-            $.post(metorik_params.ajaxurl, data, function(response) {
-                // hide email usage notice
-                $('.metorik-email-usage-notice').css('display', 'none');
-
-                // close/hide tippy if have
-                var button = $('.tippy-active');
-                if (button.length && button[0]._tippy) {
-                    button[0]._tippy.hide();
-                }
-
-                // send cart so we can send email opted out
-                sendCartData();
-            });
-        });
     }
-})(jQuery);
+});

@@ -57,10 +57,13 @@ class Metorik_Custom
      */
     public function scripts_styles()
     {
+        // @temp 
+        //wp_deregister_script('jquery');
+
         /*
          * Enqueue scripts.
          */
-        wp_enqueue_script('metorik-js', plugins_url('assets/js/metorik.min.js', dirname(__FILE__)), array('jquery'), $this->version, true);
+        wp_enqueue_script('metorik-js', plugins_url('assets/js/metorik.min.js', dirname(__FILE__)), $this->version, true);
 
         /*
          * Enqueue styles.

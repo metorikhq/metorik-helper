@@ -6,7 +6,7 @@ var uglify = require('gulp-uglify');
 var jsDest = 'assets/js';
 
 gulp.task('magic', function () {
-    return gulp.src(['assets/js/src/sourcebuster.js', 'assets/js/src/tippy.min.js', 'assets/js/src/metorik.js'])
+    return gulp.src(['assets/js/src/axios.min.js', 'assets/js/src/sourcebuster.js', 'assets/js/src/tippy.min.js', 'assets/js/src/metorik.js'])
         .pipe(concat('metorik.min.js'))
         .pipe(gulp.dest(jsDest))
         .pipe(uglify())
