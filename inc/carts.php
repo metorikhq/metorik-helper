@@ -572,15 +572,25 @@ class Metorik_Helper_Carts
         // Client session
         $session = $body->data->client_session;
         if ($session) {
-            $applied_coupons = (array) $session->applied_coupons;
-            $chosen_shipping_methods = (array) $session->chosen_shipping_methods;
-            $shipping_method_counts = (array) $session->shipping_method_counts;
-            $chosen_payment_method = $session->chosen_payment_method;
+            if (isset($session->applied_coupons)) {
+                $applied_coupons = (array) $session->applied_coupons;
+                WC()->session->set('applied_coupons', $this->return_valid_coupons($applied_coupons));
+            }
 
-            WC()->session->set('applied_coupons', $this->return_valid_coupons($applied_coupons));
-            WC()->session->set('chosen_shipping_methods', $chosen_shipping_methods);
-            WC()->session->set('shipping_method_counts', $shipping_method_counts);
-            WC()->session->set('chosen_payment_method', $chosen_payment_method);
+            if (isset($session->chosen_shipping_methods)) {
+                $chosen_shipping_methods = (array) $session->chosen_shipping_methods;
+                WC()->session->set('chosen_shipping_methods', $chosen_shipping_methods);
+            }
+
+            if (isset($session->shipping_method_counts)) {
+                $shipping_method_counts = (array) $session->shipping_method_counts;
+                WC()->session->set('shipping_method_counts', $shipping_method_counts);
+            }
+
+            if (isset($session->chosen_payment_method)) {
+                $chosen_payment_method = $session->chosen_payment_method;
+                WC()->session->set('chosen_payment_method', $chosen_payment_method);
+            }
         }
     }
 
