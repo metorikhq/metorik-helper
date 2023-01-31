@@ -60,6 +60,13 @@ class Metorik_Helper
     public function init()
     {
         if (class_exists('WooCommerce')) {
+            // Woo HPOS compatibility
+            add_action('before_woocommerce_init', function () {
+                if (class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class)) {
+                    \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true);
+                }
+            });
+
             // Activate notice (shown once)
             add_action('admin_notices', array($this, 'activate_notice'));
 
