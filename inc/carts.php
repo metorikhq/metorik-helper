@@ -50,6 +50,15 @@ class Metorik_Helper_Carts
     }
 
     /**
+     * Method to get the Metorik API URL with a WordPress filter to override it.
+     */
+    public function getMetorikApiUrl()
+    {
+        $url = $this->apiUrl;
+        return apply_filters('metorik_carts_api_url', $url);
+    }
+
+    /**
      * Check any prerequisites required for our add to cart request.
      * From https://barn2.co.uk/managing-cart-rest-api-woocommerce-3-6/.
      */
@@ -275,7 +284,7 @@ class Metorik_Helper_Carts
             ),
         );
 
-        $response = wp_remote_post($this->apiUrl.'/incoming/carts', array(
+        $response = wp_remote_post($this->getMetorikApiUrl().'/incoming/carts', array(
             'body' => $data,
         ));
 
@@ -302,7 +311,7 @@ class Metorik_Helper_Carts
             // clear cart remotely by sending empty cart
             $token = $this->get_or_set_cart_token();
 
-            $response = wp_remote_post($this->apiUrl.'/incoming/carts', array(
+            $response = wp_remote_post($this->getMetorikApiUrl().'/incoming/carts', array(
                 'body' => array(
                     'api_token' => $metorik_auth_token,
                     'data'      => array(
@@ -519,7 +528,7 @@ class Metorik_Helper_Carts
         }
 
         // get cart
-        $response = wp_remote_get($this->apiUrl.'/external/carts', array(
+        $response = wp_remote_get($this->getMetorikApiUrl().'/external/carts', array(
             'body' => array(
                 'api_token'  => $metorik_auth_token,
                 'cart_token' => $cart_token,
