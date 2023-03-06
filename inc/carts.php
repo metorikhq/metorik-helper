@@ -55,6 +55,7 @@ class Metorik_Helper_Carts
     public function getMetorikApiUrl()
     {
         $url = $this->apiUrl;
+
         return apply_filters('metorik_carts_api_url', $url);
     }
 
@@ -266,22 +267,22 @@ class Metorik_Helper_Carts
         $data = array(
             'api_token' => $metorik_auth_token,
             'data'      => array(
-                'token'             => $token,
-                'cart'              => $cart,
-                'started_at'        => current_time('timestamp', true), // utc timestamp
-                'total'             => (float) $this->get_cart_total(),
-                'subtotal'          => (float) $this->get_cart_subtotal(),
-                'total_tax'         => (float) $this->get_cart_tax(),
-                'total_discount'    => (float) $this->get_cart_discount(),
-                'total_shipping'    => (float) $this->get_cart_shipping(),
-                'total_fee'         => (float) $this->get_cart_fee(),
-                'currency'          => get_woocommerce_currency(),
-                'customer_id'       => $customer_id,
-                'email'             => $email,
-                'name'              => $name,
-                'phone'             => $phone,
-                'email_opt_out'     => $this->get_customer_email_opt_out(),
-                'client_session'    => $this->get_client_session_data(),
+                'token'                        => $token,
+                'cart'                         => $cart,
+                'started_at'                   => current_time('timestamp', true), // utc timestamp
+                'total'                        => (float) $this->get_cart_total(),
+                'subtotal'                     => (float) $this->get_cart_subtotal(),
+                'total_tax'                    => (float) $this->get_cart_tax(),
+                'total_discount'               => (float) $this->get_cart_discount(),
+                'total_shipping'               => (float) $this->get_cart_shipping(),
+                'total_fee'                    => (float) $this->get_cart_fee(),
+                'currency'                     => get_woocommerce_currency(),
+                'customer_id'                  => $customer_id,
+                'email'                        => $email,
+                'name'                         => $name,
+                'phone'                        => $phone,
+                'email_opt_out'                => $this->get_customer_email_opt_out(),
+                'client_session'               => $this->get_client_session_data(),
                 'display_prices_including_tax' => WC()->cart->display_prices_including_tax(),
             ),
         );
@@ -345,6 +346,7 @@ class Metorik_Helper_Carts
         } else {
             // product page, etc. - total not calculated but can get here
             $total = WC()->cart->get_total(false);
+
             return $total;
         }
     }
@@ -369,7 +371,8 @@ class Metorik_Helper_Carts
     public function get_cart_tax()
     {
         //(WC()->cart->tax_total + WC()->cart->shipping_tax_total)
-        $total_tax =  WC()->cart->get_total_tax();
+        $total_tax = WC()->cart->get_total_tax();
+
         return $total_tax;
     }
 
