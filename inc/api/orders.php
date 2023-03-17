@@ -1,4 +1,5 @@
 <?php
+
 use Automattic\WooCommerce\Utilities\OrderUtil;
 
 /**
@@ -75,9 +76,9 @@ class Metorik_Helper_API_Orders extends WC_REST_Posts_Controller
      */
     public function orders_ids_callback()
     {
-        if ( OrderUtil::custom_orders_table_usage_is_enabled() ) {
+        if (OrderUtil::custom_orders_table_usage_is_enabled()) {
             $orders = wc_get_orders(array(
-                'limit' => -1,
+                'limit'  => -1,
                 'status' => 'any',
                 'return' => 'ids',
             ));
@@ -170,7 +171,7 @@ class Metorik_Helper_API_Orders extends WC_REST_Posts_Controller
             $offset = intval($request['offset']);
         }
 
-        if ( OrderUtil::custom_orders_table_usage_is_enabled() ) {
+        if (OrderUtil::custom_orders_table_usage_is_enabled()) {
             global $wpdb;
 
             $query = apply_filters(
