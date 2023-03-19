@@ -217,6 +217,7 @@ class Metorik_Helper_API_Subscriptions extends WC_REST_Posts_Controller
 
     /**
      * Add the Subscriptions meta to response.
+     * Only for wc/v1 as wc/v3 includes.
      */
     public function add_subscription_meta($response, $post, $request)
     {
