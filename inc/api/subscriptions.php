@@ -149,26 +149,55 @@ class Metorik_Helper_API_Subscriptions extends WC_REST_Posts_Controller
             $offset = intval($request['offset']);
         }
 
-        /**
-         * Get subscriptions where the date modified is greater than x days ago.
-         */
-        $subscriptions = $wpdb->get_results($wpdb->prepare(
-            "
-				SELECT 
-					id,
-					UNIX_TIMESTAMP(CONVERT_TZ(post_modified_gmt, '+00:00', @@session.time_zone)) as last_updated
-				FROM $wpdb->posts
-				WHERE post_type = 'shop_subscription' 
-					AND post_modified > %s
-					AND post_status != 'trash'
-				LIMIT %d, %d
-			",
-            array(
-                $from,
-                $offset,
-                $limit,
-            )
-        ));
+        if (OrderUtil::custom_orders_table_usage_is_enabled()) {
+            $query = apply_filters(
+                'metorik_subscriptions_updated_query_hpos',
+                "SELECT 
+                    id,
+                    UNIX_TIMESTAMP(date_updated_gmt) as last_updated
+                FROM wp_wc_orders
+                WHERE date_updated_gmt > %s
+                    AND status != 'trash'
+                    AND status != 'draft'
+                    AND status != 'auto-draft'
+                    AND status != 'wc-checkout-draft'
+                    AND type = 'shop_subscription'
+                LIMIT %d, %d"
+            );
+
+            /**
+             * Get subscriptions where the date modified is greater than x days ago and not trashed.
+             */
+            $subscriptions = $wpdb->get_results($wpdb->prepare(
+                $query,
+                array(
+                    $from,
+                    $offset,
+                    $limit,
+                )
+            ));
+        } else {
+            /**
+             * Get subscriptions where the date modified is greater than x days ago.
+             */
+            $subscriptions = $wpdb->get_results($wpdb->prepare(
+                "
+                    SELECT 
+                        id,
+                        UNIX_TIMESTAMP(CONVERT_TZ(post_modified_gmt, '+00:00', @@session.time_zone)) as last_updated
+                    FROM $wpdb->posts
+                    WHERE post_type = 'shop_subscription' 
+                        AND post_modified > %s
+                        AND post_status != 'trash'
+                    LIMIT %d, %d
+                ",
+                array(
+                    $from,
+                    $offset,
+                    $limit,
+                )
+            ));
+        }
 
         /**
          * Prepare response.
