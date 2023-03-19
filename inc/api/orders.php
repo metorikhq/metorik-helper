@@ -132,6 +132,8 @@ class Metorik_Helper_API_Orders extends WC_REST_Posts_Controller
      */
     public function orders_updated_callback($request)
     {
+        global $wpdb;
+
         /**
          * Check days set and use default if not.
          */
@@ -172,8 +174,6 @@ class Metorik_Helper_API_Orders extends WC_REST_Posts_Controller
         }
 
         if (OrderUtil::custom_orders_table_usage_is_enabled()) {
-            global $wpdb;
-
             $query = apply_filters(
                 'metorik_orders_updated_query',
                 "SELECT 
@@ -201,8 +201,6 @@ class Metorik_Helper_API_Orders extends WC_REST_Posts_Controller
                 )
             ));
         } else {
-            global $wpdb;
-
             $query = apply_filters(
                 'metorik_orders_updated_query',
                 "SELECT 
