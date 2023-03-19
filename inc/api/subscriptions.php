@@ -56,7 +56,7 @@ class Metorik_Helper_API_Subscriptions extends WC_REST_Posts_Controller
                 'limit'  => -1,
                 'status' => 'any',
                 'return' => 'ids',
-                'type' => 'shop_subscription',
+                'type'   => 'shop_subscription',
             ));
 
             /**
