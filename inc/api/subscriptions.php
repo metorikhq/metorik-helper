@@ -1,5 +1,7 @@
 <?php
 
+use Automattic\WooCommerce\Utilities\OrderUtil;
+
 /**
  * Subscriptions API for Metorik.
  */
@@ -49,30 +51,47 @@ class Metorik_Helper_API_Subscriptions extends WC_REST_Posts_Controller
      */
     public function subscriptions_ids_callback()
     {
-        /**
-         * Get subscriptions.
-         */
-        $subscriptions = new WP_Query(array(
-            'post_type'      => $this->post_type,
-            'posts_per_page' => -1,
-            'post_status'    => 'any',
-            'fields'         => 'ids',
-        ));
+        if (OrderUtil::custom_orders_table_usage_is_enabled()) {
+            $subscriptions = wc_get_orders(array(
+                'limit'  => -1,
+                'status' => 'any',
+                'return' => 'ids',
+                'type' => 'shop_subscription',
+            ));
 
-        /*
-         * No subscriptions.
-         */
-        if (!$subscriptions->have_posts()) {
-            return false;
+            /**
+             * Prepare response.
+             */
+            $data = array(
+                'count' => count($subscriptions),
+                'ids'   => $subscriptions,
+            );
+        } else {
+            /**
+             * Get subscriptions.
+             */
+            $subscriptions = new WP_Query(array(
+                'post_type'      => $this->post_type,
+                'posts_per_page' => -1,
+                'post_status'    => 'any',
+                'fields'         => 'ids',
+            ));
+
+            /*
+            * No subscriptions.
+            */
+            if (!$subscriptions->have_posts()) {
+                return false;
+            }
+
+            /**
+             * Prepare response.
+             */
+            $data = array(
+                'count' => $subscriptions->post_count,
+                'ids'   => $subscriptions->posts,
+            );
         }
-
-        /**
-         * Prepare response.
-         */
-        $data = array(
-            'count' => $subscriptions->post_count,
-            'ids'   => $subscriptions->posts,
-        );
 
         /**
          * Response.
