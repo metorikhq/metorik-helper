@@ -175,7 +175,7 @@ class Metorik_Helper_API_Orders extends WC_REST_Posts_Controller
 
         if (OrderUtil::custom_orders_table_usage_is_enabled()) {
             $query = apply_filters(
-                'metorik_orders_updated_query',
+                'metorik_orders_updated_query_hpos',
                 "SELECT 
                     id,
                     UNIX_TIMESTAMP(date_updated_gmt) as last_updated
