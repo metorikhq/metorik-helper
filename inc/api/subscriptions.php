@@ -154,7 +154,7 @@ class Metorik_Helper_API_Subscriptions extends WC_REST_Posts_Controller
                 'metorik_subscriptions_updated_query_hpos',
                 "SELECT 
                     id,
-                    UNIX_TIMESTAMP(date_updated_gmt) as last_updated
+                    UNIX_TIMESTAMP(CONVERT_TZ(date_updated_gmt, '+00:00', @@session.time_zone)) as last_updated
                 FROM wp_wc_orders
                 WHERE date_updated_gmt > %s
                     AND status != 'trash'
