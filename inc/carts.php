@@ -246,7 +246,7 @@ class Metorik_Helper_Carts
     public function ajax_send_cart()
     {
         // stop if metorik cart tracking disabled
-        if (! metorik_cart_tracking_enabled()) {
+        if (!metorik_cart_tracking_enabled()) {
             return;
         }
 
@@ -307,7 +307,7 @@ class Metorik_Helper_Carts
         // only continue if the cart is empty
         if (WC()->cart->is_empty()) {
             // stop if metorik cart tracking disabled
-            if (! metorik_cart_tracking_enabled()) {
+            if (!metorik_cart_tracking_enabled()) {
                 return;
             }
 
@@ -461,7 +461,7 @@ class Metorik_Helper_Carts
     public function checkout_order_processed($order_id)
     {
         // stop if metorik cart tracking disabled
-        if (! metorik_cart_tracking_enabled()) {
+        if (!metorik_cart_tracking_enabled()) {
             return;
         }
 
@@ -714,7 +714,7 @@ class Metorik_Helper_Carts
     public function checkout_add_email_usage_notice($field, $key)
     {
         // stop if metorik cart tracking disabled
-        if (! metorik_cart_tracking_enabled()) {
+        if (!metorik_cart_tracking_enabled()) {
             return;
         }
 
@@ -742,7 +742,7 @@ class Metorik_Helper_Carts
     public function move_checkout_email_field($fields)
     {
         // stop if metorik cart tracking disabled
-        if (! metorik_cart_tracking_enabled()) {
+        if (!metorik_cart_tracking_enabled()) {
             return;
         }
 
@@ -797,7 +797,7 @@ class Metorik_Helper_Carts
     public function add_cart_email_form()
     {
         // stop if metorik cart tracking disabled
-        if (! metorik_cart_tracking_enabled()) {
+        if (!metorik_cart_tracking_enabled()) {
             return;
         }
 
