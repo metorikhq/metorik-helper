@@ -125,6 +125,7 @@ We all make mistakes. To get them back, go to http://yoursite.com/wp-admin?show-
 * Woo HPOS compatibility for orders/subscriptions.
 * Cart tracking improvements.
 * Filter for disabling cart tracking.
+* Remove old Metorik link notices from various reports.
 
 = 1.5.2 =
 * PHP 8 bug fix for cart recovery links.
