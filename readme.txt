@@ -118,7 +118,7 @@ To hide the links from individual orders/products, you can click the 'Screen Opt
 
 **I accidentally hid the notices. How can I get them back?**
 
-We all make mistakes. To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes while logged in as an administrator.
+To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes while logged in as an administrator.
 
 == Changelog ==
 = 1.5.3 =
