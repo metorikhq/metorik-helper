@@ -137,30 +137,50 @@
          * Watch for email input changes.
          */
         var email_input_timer;
-        $('#billing_email, .metorik-capture-guest-email').bind('blur', function(e) {
-            var _this = $(this);
+
+        var emailCartHandler = function(e) {
+            var val = e.target.value;
 
             clearTimeout(email_input_timer);
             email_input_timer = setTimeout(function() {
-                if (isValidEmail(_this.val())) {
-                    sendCartData(_this.val());
+                if (isValidEmail(val)) {
+                    sendCartData(val);
                 }
             }, 500);
-        });
+        };
+
+        var billingEmailInput = document.getElementById('billing_email');
+        if (billingEmailInput) {
+            billingEmailInput.addEventListener('input', emailCartHandler);
+        }
+
+        var captureGuestEmailInput = document.querySelector('.metorik-capture-guest-email');
+        if (captureGuestEmailInput) {
+            captureGuestEmailInput.addEventListener('input', emailCartHandler);
+        }
 
         /**
          * Watch for name input changes.
          */
         var name_input_timer;
-        $('#billing_first_name, #billing_phone').bind('blur', function (e) {
-            var _this = $(this);
 
+        var checkoutFieldHandler = function(e) {
             clearTimeout(name_input_timer);
             name_input_timer = setTimeout(function () {
                 sendCartData();
             }, 500);
-        });
-
+        }
+        
+        var billingNameInput = document.getElementById('billing_first_name');
+        if (billingNameInput) {
+            billingNameInput.addEventListener('input', checkoutFieldHandler);
+        }
+        
+        var billingPhoneInput = document.getElementById('billing_phone');
+        if (billingPhoneInput) {
+            billingPhoneInput.addEventListener('input', checkoutFieldHandler);
+        }
+        
         /**
          * Popup to capture email when added to cart (if wrapper class exists/output on page).
          */
