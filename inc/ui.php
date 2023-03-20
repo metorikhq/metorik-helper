@@ -55,10 +55,10 @@ class Metorik_UI
      */
     public function register_meta_boxes()
     {
-        $orderScreen = class_exists(\Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController::class) && wc_get_container()->get( \Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController::class )->custom_orders_table_usage_is_enabled()
-            ? wc_get_page_screen_id( 'shop-order' )
+        $orderScreen = class_exists(\Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController::class) && wc_get_container()->get(\Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController::class)->custom_orders_table_usage_is_enabled()
+            ? wc_get_page_screen_id('shop-order')
             : 'shop_order';
-        
+
         add_meta_box('metorik-product-box', __('Metorik', 'metorik'), array($this, 'product_box_display'), 'product', 'side', 'high');
         add_meta_box('metorik-order-box', __('Metorik', 'metorik'), array($this, 'order_box_display'), $orderScreen, 'side', 'high');
     }
@@ -79,7 +79,7 @@ class Metorik_UI
      */
     public function order_box_display($post)
     {
-        $orderID = ( $post instanceof WP_Post ) ? $post->ID : $post->get_id();
+        $orderID = ($post instanceof WP_Post) ? $post->ID : $post->get_id();
         $shopUrl = str_replace(array('http://', 'https://'), '', home_url());
 
         echo '<a href="https://app.metorik.com/woo-admin-link?resource=orders&shop='.$shopUrl.'&id='.$orderID.'" target="_blank">
