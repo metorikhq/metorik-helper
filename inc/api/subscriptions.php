@@ -1,7 +1,5 @@
 <?php
 
-use Automattic\WooCommerce\Utilities\OrderUtil;
-
 /**
  * Subscriptions API for Metorik.
  */
@@ -51,7 +49,7 @@ class Metorik_Helper_API_Subscriptions extends WC_REST_Posts_Controller
      */
     public function subscriptions_ids_callback()
     {
-        if (OrderUtil::custom_orders_table_usage_is_enabled()) {
+        if (class_exists(\Automattic\WooCommerce\Utilities\OrderUtil::class) && \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled()) {
             $subscriptions = wc_get_orders(array(
                 'limit'  => -1,
                 'status' => 'any',
@@ -149,7 +147,7 @@ class Metorik_Helper_API_Subscriptions extends WC_REST_Posts_Controller
             $offset = intval($request['offset']);
         }
 
-        if (OrderUtil::custom_orders_table_usage_is_enabled()) {
+        if (class_exists(\Automattic\WooCommerce\Utilities\OrderUtil::class) && \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled()) {
             $query = apply_filters(
                 'metorik_subscriptions_updated_query_hpos',
                 "SELECT 

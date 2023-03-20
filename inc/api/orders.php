@@ -1,7 +1,5 @@
 <?php
 
-use Automattic\WooCommerce\Utilities\OrderUtil;
-
 /**
  * Orders API for Metorik.
  */
@@ -76,7 +74,7 @@ class Metorik_Helper_API_Orders extends WC_REST_Posts_Controller
      */
     public function orders_ids_callback()
     {
-        if (OrderUtil::custom_orders_table_usage_is_enabled()) {
+        if (class_exists(\Automattic\WooCommerce\Utilities\OrderUtil::class) && \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled()) {
             $orders = wc_get_orders(array(
                 'limit'  => -1,
                 'status' => 'any',
@@ -173,7 +171,7 @@ class Metorik_Helper_API_Orders extends WC_REST_Posts_Controller
             $offset = intval($request['offset']);
         }
 
-        if (OrderUtil::custom_orders_table_usage_is_enabled()) {
+        if (class_exists(\Automattic\WooCommerce\Utilities\OrderUtil::class) && \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled()) {
             $query = apply_filters(
                 'metorik_orders_updated_query_hpos',
                 "SELECT 
