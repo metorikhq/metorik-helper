@@ -87,6 +87,7 @@ class Metorik_Custom
             'cart_checkout_button'     => apply_filters('metorik_acp_checkout_button', true),
             'add_cart_popup_placement' => apply_filters('metorik_acp_placement', 'bottom'),
             'send_cart_events'         => apply_filters('metorik_send_cart_events', 'added_to_cart removed_from_cart updated_cart_totals updated_shipping_method applied_coupon removed_coupon updated_checkout'),
+            'sbjs_domain'              => apply_filters('metorik_sbjs_domain', false),
         );
         wp_localize_script('metorik-js', 'metorik_params', $params);
     }

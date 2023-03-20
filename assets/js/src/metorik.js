@@ -1,12 +1,18 @@
 (function($) {
+    var params = {
+        lifetime: metorik_params.lifetime,
+        session_length: metorik_params.session,
+        timezone_offset: '0', // utc
+    }
+
+    if (metorik_params.sbjs_domain) {
+        params.domain = metorik_params.sbjs_domain;
+    }
+
     /**
      * Initialize sourcebuster.js.
      */
-    sbjs.init({
-        lifetime: metorik_params.life,
-        session_length: metorik_params.session,
-        timezone_offset: '0', // utc
-    });
+    sbjs.init(params);
 
     /**
      * Set values.
