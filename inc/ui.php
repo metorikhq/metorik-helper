@@ -27,6 +27,7 @@ class Metorik_UI
         $ids = array(
             'metorik-product-box',
             'metorik-order-box',
+            'metorik-subscription-box',
         );
 
         echo '<style>';
@@ -61,6 +62,14 @@ class Metorik_UI
 
         add_meta_box('metorik-product-box', __('Metorik', 'metorik'), array($this, 'product_box_display'), 'product', 'side', 'high');
         add_meta_box('metorik-order-box', __('Metorik', 'metorik'), array($this, 'order_box_display'), $orderScreen, 'side', 'high');
+
+        $subscriptionScreen = class_exists(\Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController::class) && wc_get_container()->get(\Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController::class)->custom_orders_table_usage_is_enabled()
+            ? wc_get_page_screen_id('shop-subscription')
+            : 'shop_subscription';
+
+        if ($subscriptionScreen) {
+            add_meta_box('metorik-subscription-box', __('Metorik', 'metorik'), array($this, 'subscription_box_display'), $subscriptionScreen, 'side', 'high');
+        }
     }
 
     /**
@@ -83,6 +92,19 @@ class Metorik_UI
         $shopUrl = str_replace(array('http://', 'https://'), '', home_url());
 
         echo '<a href="https://app.metorik.com/woo-admin-link?resource=orders&shop='.$shopUrl.'&id='.$orderID.'" target="_blank">
+			<img src="'.Metorik_Helper()->url.'assets/img/metorik.png" /> View in Metorik <span class="dashicons dashicons-arrow-right-alt2"></span>
+		</a>';
+    }
+
+    /**
+     * Subscription meta box display callback.
+     */
+    public function subscription_box_display($post)
+    {
+        $orderID = ($post instanceof WP_Post) ? $post->ID : $post->get_id();
+        $shopUrl = str_replace(array('http://', 'https://'), '', home_url());
+
+        echo '<a href="https://app.metorik.com/woo-admin-link?resource=subscriptions&shop='.$shopUrl.'&id='.$orderID.'" target="_blank">
 			<img src="'.Metorik_Helper()->url.'assets/img/metorik.png" /> View in Metorik <span class="dashicons dashicons-arrow-right-alt2"></span>
 		</a>';
     }

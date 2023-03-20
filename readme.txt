@@ -126,6 +126,7 @@ To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes wh
 * Cart tracking improvements.
 * Filter for disabling cart tracking.
 * Remove old Metorik link notices from various reports.
+* Subscription page 'view in Metorik' link.
 
 = 1.5.2 =
 * PHP 8 bug fix for cart recovery links.
