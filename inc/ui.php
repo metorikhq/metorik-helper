@@ -11,7 +11,7 @@ class Metorik_UI
         if (apply_filters('metorik_show_ui', true)) {
             // product/order meta boxes
             add_action('admin_head', array($this, 'custom_css'));
-            add_action('add_meta_boxes', array($this, 'register_meta_boxes'));
+            add_action('add_meta_boxes', array($this, 'register_meta_boxes'), 0);
 
             // customers table
             add_filter('manage_users_columns', array($this, 'modify_user_table'));
@@ -39,6 +39,7 @@ class Metorik_UI
             echo '
 				#'.$id.' button { display: none; }
 				#'.$id.' h2 { display: none; }
+				#'.$id.' .postbox-header { border-bottom: none; }
 				#'.$id.' .inside { padding: 0; margin: 0; }
 				#'.$id.' .inside a { display: block; font-weight: bold; padding: 12px; text-decoration: none; vertical-align: middle; }
 				#'.$id.' .inside a:hover { background: #fafafa; }
@@ -58,8 +59,12 @@ class Metorik_UI
      */
     public function register_meta_boxes()
     {
+        $orderScreen = class_exists(\Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController::class) && wc_get_container()->get( \Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController::class )->custom_orders_table_usage_is_enabled()
+            ? wc_get_page_screen_id( 'shop-order' )
+            : 'shop_order';
+        
         add_meta_box('metorik-product-box', __('Metorik', 'metorik'), array($this, 'product_box_display'), 'product', 'side', 'high');
-        add_meta_box('metorik-order-box', __('Metorik', 'metorik'), array($this, 'order_box_display'), 'shop_order', 'side', 'high');
+        add_meta_box('metorik-order-box', __('Metorik', 'metorik'), array($this, 'order_box_display'), $orderScreen, 'side', 'high');
     }
 
     /**
@@ -68,7 +73,7 @@ class Metorik_UI
     public function product_box_display($post)
     {
         echo '<a href="https://app.metorik.com/products/'.$post->ID.'" target="_blank">
-			<img src="'.Metorik_Helper()->url.'assets/img/metorik.png" /> View on Metorik <span class="dashicons dashicons-arrow-right-alt2"></span>
+			<img src="'.Metorik_Helper()->url.'assets/img/metorik.png" /> View in Metorik <span class="dashicons dashicons-arrow-right-alt2"></span>
 		</a>';
     }
 
@@ -77,8 +82,10 @@ class Metorik_UI
      */
     public function order_box_display($post)
     {
-        echo '<a href="https://app.metorik.com/orders/'.$post->ID.'" target="_blank">
-			<img src="'.Metorik_Helper()->url.'assets/img/metorik.png" /> View on Metorik <span class="dashicons dashicons-arrow-right-alt2"></span>
+        $orderID = ( $post instanceof WP_Post ) ? $post->ID : $post->get_id();
+
+        echo '<a href="https://app.metorik.com/orders/'.$orderID.'" target="_blank">
+			<img src="'.Metorik_Helper()->url.'assets/img/metorik.png" /> View in Metorik <span class="dashicons dashicons-arrow-right-alt2"></span>
 		</a>';
     }
 
