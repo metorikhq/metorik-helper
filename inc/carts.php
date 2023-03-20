@@ -245,11 +245,12 @@ class Metorik_Helper_Carts
      */
     public function ajax_send_cart()
     {
-        // metorik auth token? if none, stop
-        $metorik_auth_token = get_option('metorik_auth_token');
-        if (!$metorik_auth_token) {
+        // stop if metorik cart tracking disabled
+        if (! metorik_cart_tracking_enabled()) {
             return;
         }
+
+        $metorik_auth_token = get_option('metorik_auth_token');
 
         // variables
         $cart = WC()->cart->get_cart();
@@ -305,9 +306,8 @@ class Metorik_Helper_Carts
     {
         // only continue if the cart is empty
         if (WC()->cart->is_empty()) {
-            // metorik auth token? if none, stop
-            $metorik_auth_token = get_option('metorik_auth_token');
-            if (!$metorik_auth_token) {
+            // stop if metorik cart tracking disabled
+            if (! metorik_cart_tracking_enabled()) {
                 return;
             }
 
@@ -460,9 +460,8 @@ class Metorik_Helper_Carts
      */
     public function checkout_order_processed($order_id)
     {
-        // no metorik auth token? Stop
-        $metorik_auth_token = get_option('metorik_auth_token');
-        if (!$metorik_auth_token) {
+        // stop if metorik cart tracking disabled
+        if (! metorik_cart_tracking_enabled()) {
             return;
         }
 
@@ -714,10 +713,9 @@ class Metorik_Helper_Carts
      */
     public function checkout_add_email_usage_notice($field, $key)
     {
-        // metorik auth token? if none, stop
-        $metorik_auth_token = get_option('metorik_auth_token');
-        if (!$metorik_auth_token) {
-            return $field;
+        // stop if metorik cart tracking disabled
+        if (! metorik_cart_tracking_enabled()) {
+            return;
         }
 
         // only if 3.4+, setting enabled, customer hasn't already opted out and billing email field exists
@@ -743,10 +741,9 @@ class Metorik_Helper_Carts
      */
     public function move_checkout_email_field($fields)
     {
-        // metorik auth token? if none, stop and return fields as-is
-        $metorik_auth_token = get_option('metorik_auth_token');
-        if (!$metorik_auth_token) {
-            return $fields;
+        // stop if metorik cart tracking disabled
+        if (! metorik_cart_tracking_enabled()) {
+            return;
         }
 
         // Oonly if setting is enabled and WC 3.0+)
@@ -799,9 +796,8 @@ class Metorik_Helper_Carts
      */
     public function add_cart_email_form()
     {
-        // metorik auth token? if none, stop
-        $metorik_auth_token = get_option('metorik_auth_token');
-        if (!$metorik_auth_token) {
+        // stop if metorik cart tracking disabled
+        if (! metorik_cart_tracking_enabled()) {
             return;
         }
 
