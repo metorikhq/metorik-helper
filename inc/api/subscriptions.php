@@ -63,6 +63,7 @@ class Metorik_Helper_API_Subscriptions extends WC_REST_Posts_Controller
             $data = array(
                 'count' => count($subscriptions),
                 'ids'   => $subscriptions,
+                'hpos' => true,
             );
         } else {
             /**
@@ -147,7 +148,9 @@ class Metorik_Helper_API_Subscriptions extends WC_REST_Posts_Controller
             $offset = intval($request['offset']);
         }
 
-        if (class_exists(\Automattic\WooCommerce\Utilities\OrderUtil::class) && \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled()) {
+        $hasHPOS = class_exists(\Automattic\WooCommerce\Utilities\OrderUtil::class) && \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled();
+
+        if ($hasHPOS) {
             $query = apply_filters(
                 'metorik_subscriptions_updated_query_hpos',
                 "SELECT 
@@ -202,6 +205,7 @@ class Metorik_Helper_API_Subscriptions extends WC_REST_Posts_Controller
          */
         $data = array(
             'subscriptions' => $subscriptions,
+            'hpos' => $hasHPOS,
         );
 
         /**
