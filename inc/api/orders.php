@@ -175,7 +175,7 @@ class Metorik_Helper_API_Orders extends WC_REST_Posts_Controller
         $hasHPOS = class_exists(\Automattic\WooCommerce\Utilities\OrderUtil::class) && \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled();
 
         if ($hasHPOS) {
-            $orders_table = esc_sql( \Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore::get_orders_table_name() );
+            $orders_table = esc_sql(\Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore::get_orders_table_name());
 
             $query = apply_filters(
                 'metorik_orders_updated_query_hpos',
