@@ -47,6 +47,19 @@ class Metorik_Helper_Carts
         // Coupon features
         add_action('wp_loaded', array($this, 'add_coupon_code_to_cart_session'));
         add_action('woocommerce_add_to_cart', array($this, 'add_coupon_code_to_cart'));
+
+        // Token storing URL
+        add_action('admin_init', array($this, 'set_metorik_auth_token'));
+    }
+
+    /**
+     * Method to get the Metorik API URL with a WordPress filter to override it.
+     */
+    public function getMetorikApiUrl()
+    {
+        $url = $this->apiUrl;
+
+        return apply_filters('metorik_carts_api_url', $url);
     }
 
     /**
@@ -235,11 +248,12 @@ class Metorik_Helper_Carts
      */
     public function ajax_send_cart()
     {
-        // metorik auth token? if none, stop
-        $metorik_auth_token = get_option('metorik_auth_token');
-        if (!$metorik_auth_token) {
+        // stop if metorik cart tracking disabled
+        if (!metorik_cart_tracking_enabled()) {
             return;
         }
+
+        $metorik_auth_token = get_option('metorik_auth_token');
 
         // variables
         $cart = WC()->cart->get_cart();
@@ -257,25 +271,27 @@ class Metorik_Helper_Carts
         $data = array(
             'api_token' => $metorik_auth_token,
             'data'      => array(
-                'token'             => $token,
-                'cart'              => $cart,
-                'started_at'        => current_time('timestamp', true), // utc timestamp
-                'total'             => (float) $this->get_cart_total(),
-                'subtotal'          => (float) $this->get_cart_subtotal(),
-                'total_tax'         => (float) (WC()->cart->tax_total + WC()->cart->shipping_tax_total),
-                'total_discount'    => (float) WC()->cart->discount_cart,
-                'total_shipping'    => (float) WC()->cart->shipping_total,
-                'currency'          => get_woocommerce_currency(),
-                'customer_id'       => $customer_id,
-                'email'             => $email,
-                'name'              => $name,
-                'phone'             => $phone,
-                'email_opt_out'     => $this->get_customer_email_opt_out(),
-                'client_session'    => $this->get_client_session_data(),
+                'token'                        => $token,
+                'cart'                         => $cart,
+                'started_at'                   => current_time('timestamp', true), // utc timestamp
+                'total'                        => (float) $this->get_cart_total(),
+                'subtotal'                     => (float) $this->get_cart_subtotal(),
+                'total_tax'                    => (float) $this->get_cart_tax(),
+                'total_discount'               => (float) $this->get_cart_discount(),
+                'total_shipping'               => (float) $this->get_cart_shipping(),
+                'total_fee'                    => (float) $this->get_cart_fee(),
+                'currency'                     => get_woocommerce_currency(),
+                'customer_id'                  => $customer_id,
+                'email'                        => $email,
+                'name'                         => $name,
+                'phone'                        => $phone,
+                'email_opt_out'                => $this->get_customer_email_opt_out(),
+                'client_session'               => $this->get_client_session_data(),
+                'display_prices_including_tax' => WC()->cart->display_prices_including_tax(),
             ),
         );
 
-        $response = wp_remote_post($this->apiUrl.'/incoming/carts', array(
+        $response = wp_remote_post($this->getMetorikApiUrl().'/incoming/carts', array(
             'body' => $data,
         ));
 
@@ -293,16 +309,15 @@ class Metorik_Helper_Carts
     {
         // only continue if the cart is empty
         if (WC()->cart->is_empty()) {
-            // metorik auth token? if none, stop
-            $metorik_auth_token = get_option('metorik_auth_token');
-            if (!$metorik_auth_token) {
+            // stop if metorik cart tracking disabled
+            if (!metorik_cart_tracking_enabled()) {
                 return;
             }
 
             // clear cart remotely by sending empty cart
             $token = $this->get_or_set_cart_token();
 
-            $response = wp_remote_post($this->apiUrl.'/incoming/carts', array(
+            $response = wp_remote_post($this->getMetorikApiUrl().'/incoming/carts', array(
                 'body' => array(
                     'api_token' => $metorik_auth_token,
                     'data'      => array(
@@ -332,11 +347,10 @@ class Metorik_Helper_Carts
         ) {
             return WC()->cart->total;
         } else {
-            // product page, etc. - total not calculated but tax/shipping maybe
-            return WC()->cart->subtotal_ex_tax +
-                WC()->cart->tax_total +
-                WC()->cart->shipping_tax_total +
-                WC()->cart->shipping_total;
+            // product page, etc. - total not calculated but can get here
+            $total = WC()->cart->get_total(false);
+
+            return $total;
         }
     }
 
@@ -345,13 +359,71 @@ class Metorik_Helper_Carts
      */
     public function get_cart_subtotal()
     {
-        if ('excl' === get_option('woocommerce_tax_display_cart')) {
+        if ('excl' === WC()->cart->display_prices_including_tax()) {
             $subtotal = WC()->cart->subtotal_ex_tax;
         } else {
             $subtotal = WC()->cart->subtotal;
         }
 
         return $subtotal;
+    }
+
+    /**
+     * Get the cart tax.
+     */
+    public function get_cart_tax()
+    {
+        //(WC()->cart->tax_total + WC()->cart->shipping_tax_total)
+        $total_tax = WC()->cart->get_total_tax();
+
+        return $total_tax;
+    }
+
+    /**
+     * Get the cart discount (maybe inclusive of taxes).
+     */
+    public function get_cart_discount()
+    {
+        // @todo check which version get_totals introduced to woo
+        $discount_total = WC()->cart->get_discount_total();
+        $discount_tax = WC()->cart->get_discount_tax();
+
+        if ('excl' === WC()->cart->display_prices_including_tax()) {
+            return $discount_total;
+        } else {
+            return $discount_total + $discount_tax;
+        }
+    }
+
+    /**
+     * Get the cart shipping (maybe inclusive of taxes).
+     */
+    public function get_cart_shipping()
+    {
+        // @todo limit wc v3+ or set new wc min required version?
+        $shipping_total = WC()->cart->get_shipping_total();
+        $shipping_tax = WC()->cart->get_shipping_tax();
+
+        if ('excl' === WC()->cart->display_prices_including_tax()) {
+            return $shipping_total;
+        } else {
+            return $shipping_total + $shipping_tax;
+        }
+    }
+
+    /**
+     * Get the cart fee (maybe inclusive of taxes).
+     */
+    public function get_cart_fee()
+    {
+        $fee_total = WC()->cart->get_fee_total();
+        $fee_tax = WC()->cart->get_fee_tax();
+
+        if ('excl' === WC()->cart->display_prices_including_tax()) {
+            return $fee_total;
+        } else {
+            return $fee_total + $fee_tax;
+        }
     }
 
     /**
@@ -391,9 +463,8 @@ class Metorik_Helper_Carts
      */
     public function checkout_order_processed($order_id)
     {
-        // no metorik auth token? Stop
-        $metorik_auth_token = get_option('metorik_auth_token');
-        if (!$metorik_auth_token) {
+        // stop if metorik cart tracking disabled
+        if (!metorik_cart_tracking_enabled()) {
             return;
         }
 
@@ -519,7 +590,7 @@ class Metorik_Helper_Carts
         }
 
         // get cart
-        $response = wp_remote_get($this->apiUrl.'/external/carts', array(
+        $response = wp_remote_get($this->getMetorikApiUrl().'/external/carts', array(
             'body' => array(
                 'api_token'  => $metorik_auth_token,
                 'cart_token' => $cart_token,
@@ -645,9 +716,8 @@ class Metorik_Helper_Carts
      */
     public function checkout_add_email_usage_notice($field, $key)
     {
-        // metorik auth token? if none, stop
-        $metorik_auth_token = get_option('metorik_auth_token');
-        if (!$metorik_auth_token) {
+        // stop if metorik cart tracking disabled
+        if (!metorik_cart_tracking_enabled()) {
             return $field;
         }
 
@@ -674,9 +744,8 @@ class Metorik_Helper_Carts
      */
     public function move_checkout_email_field($fields)
     {
-        // metorik auth token? if none, stop and return fields as-is
-        $metorik_auth_token = get_option('metorik_auth_token');
-        if (!$metorik_auth_token) {
+        // stop if metorik cart tracking disabled
+        if (!metorik_cart_tracking_enabled()) {
             return $fields;
         }
 
@@ -730,9 +799,8 @@ class Metorik_Helper_Carts
      */
     public function add_cart_email_form()
     {
-        // metorik auth token? if none, stop
-        $metorik_auth_token = get_option('metorik_auth_token');
-        if (!$metorik_auth_token) {
+        // stop if metorik cart tracking disabled
+        if (!metorik_cart_tracking_enabled()) {
             return;
         }
 
@@ -892,6 +960,14 @@ class Metorik_Helper_Carts
 
             // Unset the coupon from the session
             WC()->session->__unset('mtk_coupon');
+        }
+    }
+
+    public function set_metorik_auth_token()
+    {
+        if (isset($_GET['metorik-set-auth-token']) && is_user_logged_in() && current_user_can('administrator')) {
+            $token = $_GET['metorik-set-auth-token'] && $_GET['metorik-set-auth-token'] !== 'false' ? sanitize_text_field($_GET['metorik-set-auth-token']) : false;
+            update_option('metorik_auth_token', $token);
         }
     }
 }

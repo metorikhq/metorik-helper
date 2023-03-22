@@ -74,30 +74,47 @@ class Metorik_Helper_API_Orders extends WC_REST_Posts_Controller
      */
     public function orders_ids_callback()
     {
-        /**
-         * Get orders.
-         */
-        $orders = new WP_Query(array(
-            'post_type'      => $this->post_type,
-            'posts_per_page' => -1,
-            'post_status'    => 'any',
-            'fields'         => 'ids',
-        ));
+        if (class_exists(\Automattic\WooCommerce\Utilities\OrderUtil::class) && \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled()) {
+            $orders = wc_get_orders(array(
+                'limit'  => -1,
+                'status' => 'any',
+                'return' => 'ids',
+            ));
 
-        /*
-         * No orders.
-         */
-        if (!$orders->have_posts()) {
-            return false;
+            /**
+             * Prepare response.
+             */
+            $data = array(
+                'count' => count($orders),
+                'ids'   => $orders,
+                'hpos'  => true,
+            );
+        } else {
+            /**
+             * Get orders.
+             */
+            $orders = new WP_Query(array(
+                'post_type'      => $this->post_type,
+                'posts_per_page' => -1,
+                'post_status'    => 'any',
+                'fields'         => 'ids',
+            ));
+
+            /*
+            * No orders.
+            */
+            if (!$orders->have_posts()) {
+                return false;
+            }
+
+            /**
+             * Prepare response.
+             */
+            $data = array(
+                'count' => $orders->post_count,
+                'ids'   => $orders->posts,
+            );
         }
-
-        /**
-         * Prepare response.
-         */
-        $data = array(
-            'count' => $orders->post_count,
-            'ids'   => $orders->posts,
-        );
 
         /**
          * Response.
@@ -155,38 +172,72 @@ class Metorik_Helper_API_Orders extends WC_REST_Posts_Controller
             $offset = intval($request['offset']);
         }
 
-        $query = apply_filters(
-            'metorik_orders_updated_query',
-            "SELECT 
-                id,
-                UNIX_TIMESTAMP(CONVERT_TZ(post_modified_gmt, '+00:00', @@session.time_zone)) as last_updated
-            FROM $wpdb->posts
-            WHERE post_type = 'shop_order' 
-                AND post_modified > %s
-                AND post_status != 'trash'
-                AND post_status != 'draft'
-                AND post_status != 'auto-draft'
-                AND post_status != 'checkout-draft'
-            LIMIT %d, %d"
-        );
+        $hasHPOS = class_exists(\Automattic\WooCommerce\Utilities\OrderUtil::class) && \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled();
 
-        /**
-         * Get orders where the date modified is greater than x days ago and not trashed.
-         */
-        $orders = $wpdb->get_results($wpdb->prepare(
-            $query,
-            array(
-                $from,
-                $offset,
-                $limit,
-            )
-        ));
+        if ($hasHPOS) {
+            $orders_table = esc_sql(\Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore::get_orders_table_name());
+
+            $query = apply_filters(
+                'metorik_orders_updated_query_hpos',
+                "SELECT 
+                    id,
+                    UNIX_TIMESTAMP(CONVERT_TZ(date_updated_gmt, '+00:00', @@session.time_zone)) as last_updated
+                FROM $orders_table
+                WHERE date_updated_gmt > %s
+                    AND status != 'trash'
+                    AND status != 'draft'
+                    AND status != 'auto-draft'
+                    AND status != 'wc-checkout-draft'
+                    AND type = 'shop_order'
+                LIMIT %d, %d"
+            );
+
+            /**
+             * Get orders where the date modified is greater than x days ago and not trashed.
+             */
+            $orders = $wpdb->get_results($wpdb->prepare(
+                $query,
+                array(
+                    $from,
+                    $offset,
+                    $limit,
+                )
+            ));
+        } else {
+            $query = apply_filters(
+                'metorik_orders_updated_query',
+                "SELECT 
+                    id,
+                    UNIX_TIMESTAMP(CONVERT_TZ(post_modified_gmt, '+00:00', @@session.time_zone)) as last_updated
+                FROM $wpdb->posts
+                WHERE post_type = 'shop_order' 
+                    AND post_modified > %s
+                    AND post_status != 'trash'
+                    AND post_status != 'draft'
+                    AND post_status != 'auto-draft'
+                    AND post_status != 'checkout-draft'
+                LIMIT %d, %d"
+            );
+
+            /**
+             * Get orders where the date modified is greater than x days ago and not trashed.
+             */
+            $orders = $wpdb->get_results($wpdb->prepare(
+                $query,
+                array(
+                    $from,
+                    $offset,
+                    $limit,
+                )
+            ));
+        }
 
         /**
          * Prepare response.
          */
         $data = array(
             'orders' => $orders,
+            'hpos'   => $hasHPOS,
         );
 
         /**

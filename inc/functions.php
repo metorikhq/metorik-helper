@@ -34,3 +34,21 @@ function metorik_check_headers_agent($headers)
     // got it here? false
     return false;
 }
+
+/**
+ * Function to check if Metorik cart tracking is enabled.
+ * First checks the option, but can be overridden by a filter.
+ *
+ * @return void
+ */
+function metorik_cart_tracking_enabled()
+{
+    // check if cart tracking is enabled
+    $cart_tracking = get_option('metorik_auth_token') ? true : false;
+
+    // run through metorik filter - must be bool
+    $cart_tracking = (bool) apply_filters('metorik_cart_tracking_enabled', $cart_tracking);
+
+    // return
+    return $cart_tracking;
+}

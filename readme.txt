@@ -3,7 +3,7 @@ Contributors: bryceadams, metorik
 Tags: woocommerce, woocommerce reports, woocommerce emails, woocommerce abandoned carts, woocommerce carts,  woocommerce filtering, woocommerce google analytics, woocommerce zendesk, woocommerce help scout, woocommerce freshdesk, woocommerce support, woocommerce analytics, subscription reports, woo reports, woocommerce email, woocommerce email automation, woocommerce cart emails, woocommerce export, woocommerce csv 
 Requires at least: 4.4.0
 Requires PHP: 5.6.20
-Tested up to: 6.1.0
+Tested up to: 6.2.0
 Stable tag: trunk
 License: MIT
 License URI: https://opensource.org/licenses/MIT
@@ -118,11 +118,15 @@ To hide the links from individual orders/products, you can click the 'Screen Opt
 
 **I accidentally hid the notices. How can I get them back?**
 
-We all make mistakes. To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes while logged in as an administrator.
+To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes while logged in as an administrator.
 
 == Changelog ==
-= 1.5.3 =
-* Woo HPOS compatibility declaration.
+= 1.6.0 =
+* Woo HPOS compatibility for orders/subscriptions.
+* Cart tracking improvements.
+* Filter for disabling cart tracking.
+* Remove old Metorik link notices from various reports.
+* Subscription page 'view in Metorik' link.
 
 = 1.5.2 =
 * PHP 8 bug fix for cart recovery links.
