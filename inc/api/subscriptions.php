@@ -63,7 +63,7 @@ class Metorik_Helper_API_Subscriptions extends WC_REST_Posts_Controller
             $data = array(
                 'count' => count($subscriptions),
                 'ids'   => $subscriptions,
-                'hpos' => true,
+                'hpos'  => true,
             );
         } else {
             /**
@@ -207,7 +207,7 @@ class Metorik_Helper_API_Subscriptions extends WC_REST_Posts_Controller
          */
         $data = array(
             'subscriptions' => $subscriptions,
-            'hpos' => $hasHPOS,
+            'hpos'          => $hasHPOS,
         );
 
         /**

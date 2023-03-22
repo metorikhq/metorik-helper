@@ -87,7 +87,7 @@ class Metorik_Helper_API_Orders extends WC_REST_Posts_Controller
             $data = array(
                 'count' => count($orders),
                 'ids'   => $orders,
-                'hpos' => true,
+                'hpos'  => true,
             );
         } else {
             /**
@@ -237,7 +237,7 @@ class Metorik_Helper_API_Orders extends WC_REST_Posts_Controller
          */
         $data = array(
             'orders' => $orders,
-            'hpos' => $hasHPOS,
+            'hpos'   => $hasHPOS,
         );
 
         /**
