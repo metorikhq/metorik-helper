@@ -121,6 +121,9 @@ To hide the links from individual orders/products, you can click the 'Screen Opt
 To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes while logged in as an administrator.
 
 == Changelog ==
+= 1.6.1 =
+* Fix for sending empty carts.
+
 = 1.6.0 =
 * Woo HPOS compatibility for orders/subscriptions.
 * Cart tracking improvements.
