@@ -314,6 +314,8 @@ class Metorik_Helper_Carts
                 return;
             }
 
+            $metorik_auth_token = get_option('metorik_auth_token');
+
             // clear cart remotely by sending empty cart
             $token = $this->get_or_set_cart_token();
 
