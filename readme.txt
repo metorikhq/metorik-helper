@@ -123,6 +123,7 @@ To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes wh
 == Changelog ==
 = 1.6.2 =
 * Further WooCommerce HPOS compatibility fixes.
+* Filter for disabling source tracking.
 
 = 1.6.1 =
 * Fix for sending empty carts.

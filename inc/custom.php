@@ -148,6 +148,9 @@ class Metorik_Custom
          * Now parse values to set in meta.
          */
 
+        // by default order should NOT save
+        $orderShouldSave = false;
+
         // if orders, need to get the order object
         if ($resource == 'order') {
             $order = wc_get_order($id);
@@ -157,49 +160,56 @@ class Metorik_Custom
             }
         }
 
-        // type
-        if ($values['type'] && $values['type'] !== '(none)') {
-            if ($resource == 'order') {
-                $order->update_meta_data('_metorik_source_type', $values['type']);
-            } else {
-                update_user_meta($id, '_metorik_source_type', $values['type']);
-            }
-        }
-        unset($values['type']);
-
-        // referer url
-        if ($values['url'] && $values['url'] !== '(none)') {
-            if ($resource == 'order') {
-                $order->update_meta_data('_metorik_referer', $values['url']);
-            } else {
-                update_user_meta($id, '_metorik_referer', $values['url']);
-            }
-        }
-        unset($values['url']);
-
         // metorik engage
         if ($values['mtke'] && $values['mtke'] !== '(none)') {
             if ($resource == 'order') {
                 $order->update_meta_data('_metorik_engage', $values['mtke']);
+                $orderShouldSave = true;
             } else {
                 update_user_meta($id, '_metorik_engage', $values['mtke']);
             }
         }
         unset($values['mtke']);
 
-        // rest of fields - UTMs & sessions (if not '(none)')
-        foreach ($values as $key => $value) {
-            if ($value && $value !== '(none)') {
+        // only set next fields if filter not set to false
+        if (apply_filters('metorik_set_source_tracking', true)) {
+            // type
+            if ($values['type'] && $values['type'] !== '(none)') {
                 if ($resource == 'order') {
-                    $order->update_meta_data('_metorik_'.$key, $value);
+                    $order->update_meta_data('_metorik_source_type', $values['type']);
+                    $orderShouldSave = true;
                 } else {
-                    update_user_meta($id, '_metorik_'.$key, $value);
+                    update_user_meta($id, '_metorik_source_type', $values['type']);
+                }
+            }
+            unset($values['type']);
+
+            // referer url
+            if ($values['url'] && $values['url'] !== '(none)') {
+                if ($resource == 'order') {
+                    $order->update_meta_data('_metorik_referer', $values['url']);
+                    $orderShouldSave = true;
+                } else {
+                    update_user_meta($id, '_metorik_referer', $values['url']);
+                }
+            }
+            unset($values['url']);
+
+            // rest of fields - UTMs & sessions (if not '(none)')
+            foreach ($values as $key => $value) {
+                if ($value && $value !== '(none)') {
+                    if ($resource == 'order') {
+                        $order->update_meta_data('_metorik_'.$key, $value);
+                        $orderShouldSave = true;
+                    } else {
+                        update_user_meta($id, '_metorik_'.$key, $value);
+                    }
                 }
             }
         }
 
-        // now save for orders
-        if ($resource == 'order') {
+        // now save for orders (regardless filter) if SHOULD save (at least one meta updated above)
+        if ($resource == 'order' && $orderShouldSave) {
             $order->save();
         }
     }
