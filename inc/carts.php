@@ -474,7 +474,14 @@ class Metorik_Helper_Carts
 
         // save cart token to order meta
         if ($cart_token) {
-            update_post_meta($order_id, '_metorik_cart_token', $cart_token);
+            $order = wc_get_order($order_id);
+
+            if (!$order instanceof WC_Order) {
+                return;
+            }
+
+            $order->update_meta_data('_metorik_cart_token', $cart_token);
+            $order->save();
         }
 
         // check if pending recovery - if so, set in order meta
@@ -494,9 +501,9 @@ class Metorik_Helper_Carts
             return;
         }
 
-        update_post_meta($order_id, '_metorik_cart_recovered', true);
-
+        $order->update_meta_data('_metorik_cart_recovered', true);
         $order->add_order_note(__('Order cart recovered by Metorik.', 'metorik'));
+        $order->save();
     }
 
     /**

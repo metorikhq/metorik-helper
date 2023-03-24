@@ -121,11 +121,15 @@ To hide the links from individual orders/products, you can click the 'Screen Opt
 To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes while logged in as an administrator.
 
 == Changelog ==
+= 1.6.2 =
+* Further WooCommerce HPOS compatibility fixes.
+* Filter for disabling source tracking.
+
 = 1.6.1 =
 * Fix for sending empty carts.
 
 = 1.6.0 =
-* Woo HPOS compatibility for orders/subscriptions.
+* WooCommerce HPOS compatibility for orders/subscriptions.
 * Cart tracking improvements.
 * Filter for disabling cart tracking.
 * Remove old Metorik link notices from various reports.
