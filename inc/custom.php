@@ -148,32 +148,60 @@ class Metorik_Custom
          * Now parse values to set in meta.
          */
 
-        // update function based on order or customer
-        $update_function = $resource == 'order' ? 'update_post_meta' : 'update_user_meta';
+        // if orders, need to get the order object
+        if ($resource == 'order') {
+            $order = wc_get_order($id);
+
+            if (!$order instanceof WC_Order) {
+                return;
+            }
+        }
+        
 
         // type
         if ($values['type'] && $values['type'] !== '(none)') {
-            $update_function($id, '_metorik_source_type', $values['type']);
+            if ($resource == 'order') {
+                $order->update_meta_data('_metorik_source_type', $values['type']);
+            } else {
+                update_user_meta($id, '_metorik_source_type', $values['type']);
+            }
         }
         unset($values['type']);
 
         // referer url
         if ($values['url'] && $values['url'] !== '(none)') {
-            $update_function($id, '_metorik_referer', $values['url']);
+            if ($resource == 'order') {
+                $order->update_meta_data('_metorik_referer', $values['url']);
+            } else {
+                update_user_meta($id, '_metorik_referer', $values['url']);
+            }
         }
         unset($values['url']);
 
         // metorik engage
         if ($values['mtke'] && $values['mtke'] !== '(none)') {
-            $update_function($id, '_metorik_engage', $values['mtke']);
+            if ($resource == 'order') {
+                $order->update_meta_data('_metorik_engage', $values['mtke']);
+            } else {
+                update_user_meta($id, '_metorik_engage', $values['mtke']);
+            }
         }
         unset($values['mtke']);
 
         // rest of fields - UTMs & sessions (if not '(none)')
         foreach ($values as $key => $value) {
             if ($value && $value !== '(none)') {
-                $update_function($id, '_metorik_'.$key, $value);
+                if ($resource == 'order') {
+                    $order->update_meta_data('_metorik_'.$key, $value);
+                } else {
+                    update_user_meta($id, '_metorik_'.$key, $value);
+                }
             }
+        }
+
+        // now save for orders
+        if ($resource == 'order') {
+            $order->save();
         }
     }
 }
