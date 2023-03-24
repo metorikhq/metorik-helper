@@ -172,7 +172,7 @@ class Metorik_Custom
         unset($values['mtke']);
 
         // only set next fields if filter not set to false
-        if (apply_filters('metorik_set_source_tracking', true)) {
+        if (apply_filters('metorik_source_tracking_enabled', true)) {
             // type
             if ($values['type'] && $values['type'] !== '(none)') {
                 if ($resource == 'order') {
