@@ -156,7 +156,6 @@ class Metorik_Custom
                 return;
             }
         }
-        
 
         // type
         if ($values['type'] && $values['type'] !== '(none)') {

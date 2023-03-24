@@ -475,7 +475,7 @@ class Metorik_Helper_Carts
         // save cart token to order meta
         if ($cart_token) {
             $order = wc_get_order($order_id);
-    
+
             if (!$order instanceof WC_Order) {
                 return;
             }
