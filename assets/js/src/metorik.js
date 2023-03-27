@@ -107,31 +107,32 @@
          * As this event may trigger with no items in cart (initial page
          * load) but no need to send cart then. So we check for items.
          */
-        
-        $(document.body).on(
-            'wc_fragments_refreshed',
-            function(event) {
-                // Only continue if wc_cart_fragments_params defined
-                if (wc_cart_fragments_params) {
-                    // Get cart hash key from wc_cart_fragments_params variable
-                    var cart_hash_key = wc_cart_fragments_params.cart_hash_key;
+        if (metorik_params.send_cart_fragments) {
+            $(document.body).on(
+                'wc_fragments_refreshed',
+                function(event) {
+                    // Only continue if wc_cart_fragments_params defined
+                    if (wc_cart_fragments_params) {
+                        // Get cart hash key from wc_cart_fragments_params variable
+                        var cart_hash_key = wc_cart_fragments_params.cart_hash_key;
 
-                    try {
-                        // Get local storage and session storage for cart dash
-                        var localStorageItem = localStorage.getItem(cart_hash_key)
-                        var sessionStorageItem = sessionStorage.getItem(cart_hash_key)
+                        try {
+                            // Get local storage and session storage for cart dash
+                            var localStorageItem = localStorage.getItem(cart_hash_key)
+                            var sessionStorageItem = sessionStorage.getItem(cart_hash_key)
 
-                        // Check if have local storage or session storage
-                        if (localStorageItem || sessionStorageItem) {
-                            // Have items so we'll send the cart data now
-                            sendCartData();
+                            // Check if have local storage or session storage
+                            if (localStorageItem || sessionStorageItem) {
+                                // Have items so we'll send the cart data now
+                                sendCartData();
+                            }
+                        } catch (e) {
+
                         }
-                    } catch (e) {
-
                     }
                 }
-            }
-        );
+            );
+        }
 
         /**
          * Watch for email input changes.
