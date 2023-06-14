@@ -20,9 +20,21 @@ In just a few clicks, Metorik gives your store a powerful real-time dashboard, u
 
 Tired of spending half your day waiting for WooCommerce reports to load? Metorik spins up detailed reports and charts faster than any other tool available. It also reduces the load on your site's admin dashboard since you can do everything from Metorik, as such making your site faster.
 
+= Powerful and custom reporting =
+
+Metorik includes [a ton of reports](https://metorik.com/features/reports?ref=wporg), covering everything from revenue to sales by state, customer stats and cart abandonment metrics. Every report can be exported, all charts can be downloaded as beautiful custom images, and you can forecast any report in a single click.
+
+Better yet, every single report can be filtered, letting you build custom reports with zero code using our intuitive segmenting system.
+
 = Every KPI you could ask for =
 
 What's your average customer LTV (lifetime value)? What's your average numbers of items per order? How many of product A or variation B did you sell last month? If these are questions you've always wanted answers for, Metorik will be a lifesaver.
+
+= Custom Dashboards =
+
+With Metorik, you can build custom dashboards and reports. Include the metrics and KPIs you track, custom segments (more on that below), and share dashboards you create with your team.
+
+Using our drag and drop builder, it's easy to build the reporting dashboard your business needs - no coding required.
 
 = Segment everything by anything =
 
@@ -45,6 +57,16 @@ With [Metorik Engage](https://metorik.com/engage?ref=wporg) and it's accompanyin
 For example, email customers whenever they've spent over $500 and include a coupon code uniquely generated for them for 20% off.
 
 Writing emails couldn't be easier with Engage's email builder and each automation comes with a comprehensive report so you can see which emails are converting and which ones are being ignored.
+
+= Costs & profit reports =
+
+Metorik includes a full featured [cost & profit reporting system](https://metorik.com/features/costs), which lets you calculate product, shipping, transaction, advertising, and extra costs for each order.
+
+If you're already using WooCommerce's cost of goods plugin, we'll automatically import product costs, or otherwise you can set and import costs into Metorik.
+
+When it comes to shipping costs, you can calculate costs by weight, shipping charged, and more. For transaction costs, set % and $ costs, or automatically use the actual cost charged by Stripe, PayPal, etc.
+
+And on the advertising costs side, Metorik automatically syncs ad costs from Google Ads, Facebook Ads, TikTok, and Pinterest.
 
 = Cart tracking and reports =
 
@@ -78,7 +100,7 @@ Metorik integrates seamlessly with [WooCommerce Subscriptions](https://metorik.c
 
 = Fast support =
 
-Support is available to every Metorik user, whether you're just starting your trial or have used us for years. We'll personally work with you to ensure you and your team get the most out of Metorik.
+Support is available to every Metorik user, whether you're just starting your trial or have used us for years. We'll personally work with you to ensure you and your team get the most out of Metorik. There's a reason why 5000+ stores and 1000s of customers trust us as their WooCommerce reporting solution - [view the love](https://metorik.com/love).
 
 = Bring your team =
 
