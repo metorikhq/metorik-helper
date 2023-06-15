@@ -38,7 +38,7 @@ Using our drag and drop builder, it's easy to build the reporting dashboard your
 
 = Segment everything by anything =
 
-Metorik offers a robust & powerful [segmenting system](https://help.metorik.com/article/54-all-about-segmenting). It allows you segment your data by anything and everything (seriously), export that segmented data to a CSV (automatically, if that's your thing). You can even save the filters you used for next time, or share them with your team.
+Metorik offers a robust & powerful [segmenting system](https://metorik.com/features/segmenting?ref=wporg). It allows you segment your data by anything and everything (seriously), export that segmented data to a CSV (automatically, if that's your thing). You can even save the filters you used for next time, or share them with your team.
 
 Want all customers who have an LTV over $100 and own a certain product? **Easy.**
 
@@ -48,11 +48,9 @@ Subscriptions that were set to be canceled this week? **Easy.**
 
 Customers who haven't ordered in 4 months and live in California? **Easy.**
 
-Read more about the segmenting system [here](https://metorik.com/blog/improved-segmenting-filtering-in-metorik?ref=wporg).
-
 = Send automated emails to customers =
 
-With [Metorik Engage](https://metorik.com/engage?ref=wporg) and it's accompanying segmenting system, you can send targeted emails to customers automatically as soon as they match certain rules.
+With [Metorik Engage](https://metorik.com/features/engage?ref=wporg) and it's accompanying segmenting system, you can send targeted emails to customers automatically as soon as they match certain rules.
 
 For example, email customers whenever they've spent over $500 and include a coupon code uniquely generated for them for 20% off.
 
@@ -60,7 +58,7 @@ Writing emails couldn't be easier with Engage's email builder and each automatio
 
 = Costs & profit reports =
 
-Metorik includes a full featured [cost & profit reporting system](https://metorik.com/features/costs), which lets you calculate product, shipping, transaction, advertising, and extra costs for each order.
+Metorik includes a full featured [cost & profit reporting system](https://metorik.com/features/costs?ref=wporg), which lets you calculate product, shipping, transaction, advertising, and extra costs for each order.
 
 If you're already using WooCommerce's cost of goods plugin, we'll automatically import product costs, or otherwise you can set and import costs into Metorik.
 
@@ -70,7 +68,7 @@ And on the advertising costs side, Metorik automatically syncs ad costs from Goo
 
 = Cart tracking and reports =
 
-[Metorik tracks every cart](https://metorik.com/carts) started on your store, making it easy for you to see all open, abandoned, and placed carts. Also included is the Carts Report, covering all of your cart-related stats.
+[Metorik tracks every cart](https://metorik.com/features/carts?ref=wporg) started on your store, making it easy for you to see all open, abandoned, and placed carts. Also included is the Carts Report, covering all of your cart-related stats.
 
 And better yet, through Metorik Engage, you can send automatic abandoned cart emails to try get customers to complete their purchase.
 
@@ -96,7 +94,7 @@ Any data can be exported from Metorik at any time in minutes. You can even sched
 
 = WooCommerce Subscriptions support =
 
-Metorik integrates seamlessly with [WooCommerce Subscriptions](https://metorik.com/go/subscriptions), offering subscription filtering & exporting, along with reports like MRR, Churn, Retention, Forecasting, and more. You can even have an automated subscriptions report sent to you every day summarising everything subscriptions-related.
+Metorik integrates seamlessly with [WooCommerce Subscriptions](https://metorik.com/features/subscriptions?ref=wporg), offering subscription filtering & exporting, along with reports like MRR, Churn, Retention, Forecasting, and more. You can even have an automated subscriptions report sent to you every day summarising everything subscriptions-related.
 
 = Fast support =
 
