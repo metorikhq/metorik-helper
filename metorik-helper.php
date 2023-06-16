@@ -8,7 +8,7 @@
  * Author URI: https://metorik.com
  * Text Domain: metorik
  * WC requires at least: 4.0.0
- * WC tested up to: 7.4.1.
+ * WC tested up to: 7.8.0.
  */
 class Metorik_Helper
 {

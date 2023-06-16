@@ -143,7 +143,7 @@ To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes wh
 == Changelog ==
 = 1.6.3 =
 * Filter for stopping Woo cart fragments change cart sending.
-* Cart fragments fix for WooCommerce 7.8+ and some cart plugins.
+* Cart fragments JS fix for WooCommerce 7.8+ and some cart plugins.
 
 = 1.6.2 =
 * Further WooCommerce HPOS compatibility fixes.
