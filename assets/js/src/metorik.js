@@ -112,7 +112,7 @@
                 'wc_fragments_refreshed',
                 function(event) {
                     // Only continue if wc_cart_fragments_params defined
-                    if (wc_cart_fragments_params) {
+                    if (typeof wc_cart_fragments_params !== 'undefined' && wc_cart_fragments_params) {
                         // Get cart hash key from wc_cart_fragments_params variable
                         var cart_hash_key = wc_cart_fragments_params.cart_hash_key;
 
