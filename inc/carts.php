@@ -285,6 +285,7 @@ class Metorik_Helper_Carts
                 'email'                        => $email,
                 'name'                         => $name,
                 'phone'                        => $phone,
+                'locale'                       => get_user_locale(),
                 'email_opt_out'                => $this->get_customer_email_opt_out(),
                 'client_session'               => $this->get_client_session_data(),
                 'display_prices_including_tax' => WC()->cart->display_prices_including_tax(),
