@@ -141,6 +141,9 @@ To hide the links from individual orders/products, you can click the 'Screen Opt
 To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes while logged in as an administrator.
 
 == Changelog ==
+= 1.7.0 =
+* Include user locale/language with carts.
+
 = 1.6.3 =
 * Filter for stopping Woo cart fragments change cart sending.
 * Cart fragments JS fix for WooCommerce 7.8+ and some cart plugins.
