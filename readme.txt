@@ -141,6 +141,10 @@ To hide the links from individual orders/products, you can click the 'Screen Opt
 To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes while logged in as an administrator.
 
 == Changelog ==
+= 1.7.1 =
+* Allow providing a custom redirect URL when restoring a cart.
+* Allow 'lang' query parameter through when restoring a cart and redirecting.
+
 = 1.7.0 =
 * Include user locale/language with carts.
 
