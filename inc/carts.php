@@ -554,12 +554,17 @@ class Metorik_Helper_Carts
                 $checkout_url = $this->get_cart_setting('checkout_url');
             }
 
+            // if request param for custom redirect url, use that
+            if (isset($request['redirect_url']) && $redirect_url = $request['redirect_url']) {
+                $checkout_url = $redirect_url;
+            }
+
             // finally, allow the url to be filtered for more advanced customising
             $checkout_url = apply_filters('metorik_recover_cart_url', $checkout_url);
 
-            // forward along any UTM or metorik params
+            // forward along any UTM or metorik params or lang
             foreach ($request->get_params() as $key => $val) {
-                if (0 === strpos($key, 'utm_') || 0 === strpos($key, 'mtk')) {
+                if (0 === strpos($key, 'utm_') || 0 === strpos($key, 'mtk') || 0 === strpos($key, 'lang')) {
                     $checkout_url = add_query_arg($key, $val, $checkout_url);
                 }
             }
