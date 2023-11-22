@@ -419,8 +419,8 @@ class Metorik_Helper_Carts
      */
     public function get_cart_fee()
     {
-        $fee_total = WC()->cart->get_fee_total();
-        $fee_tax = WC()->cart->get_fee_tax();
+        $fee_total = (float) WC()->cart->get_fee_total();
+        $fee_tax = (float) WC()->cart->get_fee_tax();
 
         if ('excl' === WC()->cart->display_prices_including_tax()) {
             return $fee_total;
