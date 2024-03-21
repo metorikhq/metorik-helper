@@ -19,8 +19,6 @@ concurrency:
 jobs:
   unit_tests:
     name: "1️⃣ Unit tests"
-    needs:
-      - "syntax_errors"
     runs-on: "ubuntu-latest"
     continue-on-error: ${{ matrix.allowed_failure }}
     strategy:
