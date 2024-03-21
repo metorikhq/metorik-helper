@@ -1,0 +1,98 @@
+name: Continuous integration tests
+
+on:
+  push:
+    branches:
+      - "master"
+      - "main"
+    paths-ignore:
+      - "**.md"
+  pull_request:
+    paths-ignore:
+      - "**.md"
+  workflow_dispatch:
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  unit_tests:
+    name: "1️⃣ Unit tests"
+    needs:
+      - "syntax_errors"
+    runs-on: "ubuntu-latest"
+    continue-on-error: ${{ matrix.allowed_failure }}
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ '7.4', '8.0', '8.1', '8.2', '8.3' ]
+        allowed_failure: [ false ]
+        dependencies:
+          - "highest"
+        include:
+          - php: '8.4'
+            allowed_failure: true
+    steps:
+      - name: "Set up PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          php-version: "${{ matrix.php }}"
+          coverage: "xdebug"
+
+      - name: "Checkout code"
+        uses: "actions/checkout@v4"
+
+      - name: "Install dependencies"
+        uses: "ramsey/composer-install@v2"
+        with:
+          dependency-versions: "${{ matrix.dependencies }}"
+          custom-cache-suffix: $(date -u -d "-0 month -$(($(date +%d)-1)) days" "+%F")
+
+      - name: "Setup test suite"
+        run: "./vendor/bin/wp-pest setup plugin --plugin-slug=metorik-helper --skip-delete"
+
+      - name: "Execute unit tests"
+        run: "./vendor/bin/pest --group=unit"
+
+  integration_tests:
+    name: "2️⃣ Integration tests"
+    runs-on: "ubuntu-latest"
+    continue-on-error: ${{ matrix.allowed_failure }}
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ '7.4', '8.0', '8.1', '8.2', '8.3' ]
+        allowed_failure: [ false ]
+        dependencies:
+          - "highest"
+        include:
+          - php: '8.4'
+            allowed_failure: true
+    steps:
+      - name: "Set up PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          php-version: "${{ matrix.php }}"
+          coverage: "xdebug"
+
+      - name: "Checkout code"
+        uses: "actions/checkout@v4"
+
+      - name: "Install dependencies"
+        uses: "ramsey/composer-install@v2"
+        with:
+          dependency-versions: "${{ matrix.dependencies }}"
+          custom-cache-suffix: $(date -u -d "-0 month -$(($(date +%d)-1)) days" "+%F")
+
+      - name: "Add woocommerce plugin"
+        run:  |
+          wget https://downloads.wordpress.org/plugin/woocommerce.zip
+          unzip woocommerce.zip
+          mv woocommerce ../
+
+      - name: "Setup test suite"
+        run: "./vendor/bin/wp-pest setup plugin --plugin-slug=metorik-helper --skip-delete"
+
+      - name: "Execute integration tests"
+        run: "./vendor/bin/pest --group=integration"
