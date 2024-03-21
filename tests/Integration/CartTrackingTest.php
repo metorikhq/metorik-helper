@@ -19,3 +19,18 @@ test('cart tracking is enabled based on auth token set', function () {
     delete_option('metorik_auth_token');
     expect(metorik_cart_tracking_enabled())->toBeFalse();
 });
+
+test('cart tracking is enabled based on filter', function () {
+    update_option('metorik_auth_token', 'test');
+    add_filter('metorik_cart_tracking_enabled', '__return_false');
+    expect(metorik_cart_tracking_enabled())->toBeFalse();
+
+    remove_filter('metorik_cart_tracking_enabled', '__return_false');
+    expect(metorik_cart_tracking_enabled())->toBeTrue();
+
+    delete_option('metorik_auth_token');
+    expect(metorik_cart_tracking_enabled())->toBeFalse();
+
+    add_filter('metorik_cart_tracking_enabled', '__return_true');
+    expect(metorik_cart_tracking_enabled())->toBeTrue();
+});
