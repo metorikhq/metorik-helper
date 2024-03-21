@@ -28,9 +28,6 @@ jobs:
         allowed_failure: [ false ]
         dependencies:
           - "highest"
-        include:
-          - php: '8.4'
-            allowed_failure: true
     steps:
       - name: "Set up PHP"
         uses: "shivammathur/setup-php@v2"
