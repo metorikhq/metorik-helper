@@ -21,3 +21,28 @@ gulp magic
 ```
 
 To compile a minified JS file.
+
+## Testing
+
+As of v2 of the plugin, we now have some limited unit & integration testing in the plugin.
+
+In order to run the tests you'll first need to set up dependencies using `composer`:
+
+```
+composer install
+```
+
+Then you'll need to set up the test suite using `wp-pest`:
+
+```
+vendor/bin/wp-pest setup plugin --plugin-slug=metorik-helper --skip-delete
+```
+
+This will create the necessary files in your project to run the tests.
+
+Then you can run the tests using:
+
+```
+composer test:unit
+composer test:integration
+```
