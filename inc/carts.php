@@ -47,9 +47,6 @@ class Metorik_Helper_Carts
         // Coupon features
         add_action('wp_loaded', array($this, 'add_coupon_code_to_cart_session'));
         add_action('woocommerce_add_to_cart', array($this, 'add_coupon_code_to_cart'));
-
-        // Token storing URL
-        add_action('admin_init', array($this, 'set_metorik_auth_token'));
     }
 
     /**
@@ -975,14 +972,6 @@ class Metorik_Helper_Carts
 
             // Unset the coupon from the session
             WC()->session->__unset('mtk_coupon');
-        }
-    }
-
-    public function set_metorik_auth_token()
-    {
-        if (isset($_GET['metorik-set-auth-token']) && is_user_logged_in() && current_user_can('administrator')) {
-            $token = $_GET['metorik-set-auth-token'] && $_GET['metorik-set-auth-token'] !== 'false' ? sanitize_text_field($_GET['metorik-set-auth-token']) : false;
-            update_option('metorik_auth_token', $token);
         }
     }
 }

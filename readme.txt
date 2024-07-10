@@ -3,7 +3,7 @@ Contributors: bryceadams, metorik
 Tags: woocommerce, woocommerce reports, woocommerce emails, woocommerce abandoned carts, woocommerce carts,  woocommerce filtering, woocommerce google analytics, woocommerce zendesk, woocommerce help scout, woocommerce freshdesk, woocommerce support, woocommerce analytics, subscription reports, woo reports, woocommerce email, woocommerce email automation, woocommerce cart emails, woocommerce export, woocommerce csv 
 Requires at least: 4.4.0
 Requires PHP: 5.6.20
-Tested up to: 6.5.0
+Tested up to: 6.6.0
 Stable tag: trunk
 License: MIT
 License URI: https://opensource.org/licenses/MIT
@@ -141,6 +141,9 @@ To hide the links from individual orders/products, you can click the 'Screen Opt
 To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes while logged in as an administrator.
 
 == Changelog ==
+= 1.7.2 =
+* Removed ability to enable cart tracking by admins through URL in admin (fixes a potential security issue where cart tracking could be disabled by an admin unintentionally).
+
 = 1.7.1 =
 * Allow providing a custom redirect URL when restoring a cart.
 * Allow 'lang' query parameter through when restoring a cart and redirecting.
