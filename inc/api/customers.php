@@ -246,12 +246,13 @@ class Metorik_Helper_API_Customers extends WC_REST_Posts_Controller
             $offset = intval($request['offset']);
         }
 
-        /*
-         * Get customers where the last update is greater than x days ago.
-         * The date needs to be a timestring.
-         *
-         * Different query depending on if this is multisite or snot.
-         */
+
+	    /*
+		 * Get customers where the last update is greater than x days ago.
+		 * The date needs to be a timestring.
+		 *
+		 * Different query depending on if this is multisite or snot.
+		 */
 
         // Multisite
         if (is_multisite()) {
@@ -281,18 +282,18 @@ class Metorik_Helper_API_Customers extends WC_REST_Posts_Controller
             ));
         } else {
             // Not multisite
-            $customers = $wpdb->get_results($wpdb->prepare(
+	        $customers = $wpdb->get_results($wpdb->prepare(
                 "
 					SELECT
 						user_id as id,
 						meta_value as last_updated
 					FROM $wpdb->usermeta
 					WHERE meta_key = 'last_update'
-						AND meta_value > %s
+						AND meta_value > %d
 					LIMIT %d, %d
 				",
                 array(
-                    $time,
+					$time,
                     $offset,
                     $limit,
                 )
