@@ -1,0 +1,11 @@
+/vendor/
+/node_modules/
+*.DS_Store
+._*
+
+# Tests - local only
+/wp-content
+/wp
+/tests/coverage
+.phpunit.result.cache
+

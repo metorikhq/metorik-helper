@@ -1,0 +1,52 @@
+{
+  "name": "metorikhq/metorik-helper",
+  "type": "wordpress-plugin",
+  "description": "The WordPress helper plugin for Metorik. Metorik provides reports, integrations, automatic emails, and cart tracking for WooCommerce stores.",
+  "keywords": ["plugin", "WordPress", "WooCommerce", "Metorik", "stats", "email", "engage", "store", "ecommerce"],
+  "homepage": "https://github.com/metorikhq/metorik-helper",
+  "license": "GPL-2.0-or-later",
+  "authors": [
+    {
+      "name": "Metorik",
+      "homepage": "https://metorik.com"
+    },
+    {
+      "name": "Bryce Adams",
+      "email": "bryce@metorik.com"
+    },
+    {
+      "name": "Joey Kudish",
+      "email": "joey@metorik.com"
+    },
+    {
+      "name": "Contributors",
+      "homepage": "https://github.com/metorikhq/metorik-helper/graphs/contributors"
+    }
+  ],
+  "require-dev": {
+    "dingo-d/wp-pest": "^2.0.0-alpha"
+  },
+  "minimum-stability": "dev",
+  "config": {
+    "sort-packages": true,
+    "optimize-autoloader": true,
+    "allow-plugins": {
+      "composer/installers": true,
+      "pestphp/pest-plugin": true
+    }
+  },
+  "scripts": {
+    "test:unit": "@php ./vendor/bin/pest --group=unit",
+    "test:integration": "@php ./vendor/bin/pest --group=integration"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "support": {
+    "issues": "https://github.com/metorikhq/metorik-helper/issues",
+    "wiki": "https://help.metorik.com/",
+    "source": "https://github.com/metorikhq/metorik-helper"
+  }
+}

@@ -163,7 +163,7 @@ class Metorik_Helper_API_Customers extends WC_REST_Posts_Controller
             "
 				SELECT user_id
 				FROM $wpdb->usermeta
-				WHERE meta_key = 'wp_capabilities' 
+				WHERE meta_key = 'wp_capabilities'
 					AND meta_value LIKE '%customer%'
 			"
         );
@@ -261,15 +261,15 @@ class Metorik_Helper_API_Customers extends WC_REST_Posts_Controller
             // Query
             $customers = $wpdb->get_results($wpdb->prepare(
                 "
-					SELECT 
+					SELECT
 						a.user_id as id,
 						b.meta_value as last_updated
 					FROM $wpdb->usermeta AS a
 					INNER JOIN $wpdb->usermeta AS b
 						ON b.user_id = a.user_id
 						AND b.meta_key = 'last_update'
-						AND b.meta_value > %d
-					WHERE a.meta_key = %s 
+						AND b.meta_value > %s
+					WHERE a.meta_key = %s
 					LIMIT %d, %d
 				",
                 array(
@@ -283,12 +283,12 @@ class Metorik_Helper_API_Customers extends WC_REST_Posts_Controller
             // Not multisite
             $customers = $wpdb->get_results($wpdb->prepare(
                 "
-					SELECT 
+					SELECT
 						user_id as id,
 						meta_value as last_updated
 					FROM $wpdb->usermeta
-					WHERE meta_key = 'last_update' 
-						AND meta_value > %d
+					WHERE meta_key = 'last_update'
+						AND meta_value > %s
 					LIMIT %d, %d
 				",
                 array(

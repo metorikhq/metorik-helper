@@ -1,322 +1,344 @@
 (function($) {
-    var params = {
-        lifetime: metorik_params.lifetime,
-        session_length: metorik_params.session,
-        timezone_offset: '0', // utc
-    }
 
-    if (metorik_params.sbjs_domain) {
-        params.domain = metorik_params.sbjs_domain;
-    }
+	class MetorikSourceTracking {
 
-    /**
-     * Initialize sourcebuster.js.
-     */
-    sbjs.init(params);
+		sourceTrackingParams = {
+			lifetime: metorik_params.source_tracking.cookie_lifetime,
+			session_length: metorik_params.source_tracking.session_length,
+			timezone_offset: '0', // utc
+		};
 
-    /**
-     * Set values.
-     */
-    var setFields = function() {
-        if (sbjs.get) {
-            $('input[name="metorik_source_type"]').val(sbjs.get.current.typ);
-            $('input[name="metorik_source_url"]').val(sbjs.get.current_add.rf);
-            $('input[name="metorik_source_mtke"]').val(sbjs.get.current.mtke);
+		init() {
 
-            $('input[name="metorik_source_utm_campaign"]').val(sbjs.get.current.cmp);
-            $('input[name="metorik_source_utm_source"]').val(sbjs.get.current.src);
-            $('input[name="metorik_source_utm_medium"]').val(sbjs.get.current.mdm);
-            $('input[name="metorik_source_utm_content"]').val(sbjs.get.current.cnt);
-            $('input[name="metorik_source_utm_id"]').val(sbjs.get.current.id);
-            $('input[name="metorik_source_utm_term"]').val(sbjs.get.current.trm);
+			// bail if source tracking is disabled
+			if (!metorik_params.source_tracking.enabled) {
+				return;
+			}
 
-            $('input[name="metorik_source_session_entry"]').val(sbjs.get.current_add.ep);
-            $('input[name="metorik_source_session_start_time"]').val(sbjs.get.current_add.fd);
-            $('input[name="metorik_source_session_pages"]').val(sbjs.get.session.pgs);
-            $('input[name="metorik_source_session_count"]').val(sbjs.get.udata.vst);
-        }
-    };
+			// bail if cookie already set
+			if (this.cookieExists()) {
+				return;
+			}
 
-    /**
-     * Add source values to checkout.
-     */
-    $(document.body).on('init_checkout', function(event) {
-        setFields();
-    });
+			// set domain if overwritten via metorik_sbjs_domain filter
+			if (metorik_params.source_tracking.sbjs_domain) {
+				this.sourceTrackingParams.domain = metorik_params.source_tracking.sbjs_domain;
+			}
 
-    /**
-     * Add source values to register.
-     */
-    if ($('.woocommerce form.register').length) {
-        setFields();
-    }
+			// Initialize sourcebuster.js
+			sbjs.init(this.sourceTrackingParams);
 
-    /**
-     * Cart functionality - only if cart tracking enabled.
-     */
-    if (metorik_params.cart_tracking) {
-        /**
-         * Send cart data.
-         * @todo Only if cart token set up.
-         */
-        var cartTimer;
-        var sendCartData = function(customEmail) {
-            clearTimeout(cartTimer);
-            cartTimer = setTimeout(function () {
-                var email = isValidEmail($('#billing_email').val()) ? $('#billing_email').val() : null;
-                if (customEmail) {
-                    email = customEmail;
-                }
+			// set the cookie
+			this.setSourceTrackingCookie();
+		}
 
-                var name = $('#billing_first_name').val();
-                var phone = $('#billing_phone').val();
+		cookieExists() {
+			return document.cookie
+				.split('; ')
+				.find((row) => row.startsWith(metorik_params.source_tracking.cookie_name));
+		}
 
-                var data = {
-                    action: 'metorik_send_cart',
-                    email: email,
-                    name: name,
-                    phone: phone,
-                };
+		cookieContent() {
+			const cookieContent = {
+				type: sbjs.get.current.typ,
+				url: sbjs.get.current_add.rf,
+				mtke: sbjs.get.current.mtke,
 
-                $.post(metorik_params.ajaxurl, data, function (response) {
-                    //
-                });
-            }, 1000);
-        };
+				utm_campaign: sbjs.get.current.cmp,
+				utm_source: sbjs.get.current.src,
+				utm_medium: sbjs.get.current.mdm,
+				utm_content: sbjs.get.current.cnt,
+				utm_id: sbjs.get.current.id,
+				utm_term: sbjs.get.current.trm,
 
-        /**
-         * Function to check if an email is valid.
-         * @param {*} email
-         */
-        var isValidEmail = function(email) {
-            return /[^\s@]+@[^\s@]+\.[^\s@]+/.test(email);
-        };
+				session_entry: sbjs.get.current_add.ep,
+				session_start_time: sbjs.get.current_add.fd,
+				session_pages: sbjs.get.session.pgs,
+				session_count: sbjs.get.udata.vst,
+			};
 
-        /**
-         * Listen for cart change events then send cart data.
-         */
-        $(document.body).on(
-            metorik_params.send_cart_events,
-            function (event) {
-                sendCartData();
-            }
-        );
+			return JSON.stringify(cookieContent);
+		}
 
-        /**
-         * Watch for fragments separate and determine if have data to send.
-         * As this event may trigger with no items in cart (initial page
-         * load) but no need to send cart then. So we check for items.
-         */
-        if (metorik_params.send_cart_fragments) {
-            $(document.body).on(
-                'wc_fragments_refreshed',
-                function(event) {
-                    // Only continue if wc_cart_fragments_params defined
-                    if (typeof wc_cart_fragments_params !== 'undefined' && wc_cart_fragments_params) {
-                        // Get cart hash key from wc_cart_fragments_params variable
-                        var cart_hash_key = wc_cart_fragments_params.cart_hash_key;
+		cookieExpiration() {
+			const date = new Date();
+			// cookie_lifetime is in months
+			// milliseconds x seconds x minutes x hours x day x month
+			date.setTime(date.getTime() + (metorik_params.source_tracking.cookie_lifetime * 1000 * 60 * 60 * 24 * 30));
+			return date.toUTCString();
+		}
 
-                        try {
-                            // Get local storage and session storage for cart dash
-                            var localStorageItem = localStorage.getItem(cart_hash_key)
-                            var sessionStorageItem = sessionStorage.getItem(cart_hash_key)
+		setSourceTrackingCookie() {
+			if (!sbjs.get) {
+				return;
+			}
 
-                            // Check if have local storage or session storage
-                            if (localStorageItem || sessionStorageItem) {
-                                // Have items so we'll send the cart data now
-                                sendCartData();
-                            }
-                        } catch (e) {
+			document.cookie = metorik_params.source_tracking.cookie_name + '=' +
+				this.cookieContent() + '; expires=' + this.cookieExpiration() + '; Secure';
+		}
+	}
 
-                        }
-                    }
-                }
-            );
-        }
+	class MetorikCartTracking {
 
-        /**
-         * Watch for email input changes.
-         */
-        var email_input_timer;
+		timers = {
+			customer_data: null,
+			email_field: null,
+			checkout_field: null,
+			add_cart: null,
+		};
 
-        var emailCartHandler = function(e) {
-            var val = e.target.value;
+		addToCartEmailWrapper = $('.add-cart-email-wrapper');
+		addToCartSeen = false;
 
-            clearTimeout(email_input_timer);
-            email_input_timer = setTimeout(function() {
-                if (isValidEmail(val)) {
-                    sendCartData(val);
-                }
-            }, 500);
-        };
+		// by default, we only show the add to cart form once, and then mark it as seen
+		// this can be disabled via the metorik_acp_should_mark_as_seen filter
+		addToCartShouldMarkAsSeen = metorik_params.cart_tracking.add_to_cart_should_mark_as_seen;
 
-        var billingEmailInput = document.getElementById('billing_email');
-        if (billingEmailInput) {
-            billingEmailInput.addEventListener('input', emailCartHandler);
-        }
+		// classes/buttons that we're targeting for the popup
+		// see metorik-helper.php where add_to_cart_button_classes is set and filterable
+		selectors = metorik_params.cart_tracking.add_to_cart_form_selectors;
 
-        var captureGuestEmailInput = document.querySelector('.metorik-capture-guest-email');
-        if (captureGuestEmailInput) {
-            captureGuestEmailInput.addEventListener('input', emailCartHandler);
-        }
+		init() {
+			// bail if cart tracking is disabled
+			if (!metorik_params.cart_tracking.enabled) {
+				return;
+			}
 
-        /**
-         * Watch for name input changes.
-         */
-        var name_input_timer;
+			this.initAddToCartPopup();
 
-        var checkoutFieldHandler = function(e) {
-            clearTimeout(name_input_timer);
-            name_input_timer = setTimeout(function () {
-                sendCartData();
-            }, 500);
-        }
-        
-        var billingNameInput = document.getElementById('billing_first_name');
-        if (billingNameInput) {
-            billingNameInput.addEventListener('input', checkoutFieldHandler);
-        }
-        
-        var billingPhoneInput = document.getElementById('billing_phone');
-        if (billingPhoneInput) {
-            billingPhoneInput.addEventListener('input', checkoutFieldHandler);
-        }
-        
-        /**
-         * Popup to capture email when added to cart (if wrapper class exists/output on page).
-         */
-        var addToCartSeen = false;
+			this.initOptOutListener();
 
-        if ($('.add-cart-email-wrapper').length) {
-            // classes/buttons that we're targeting
-            var classes = [
-                '.button.ajax_add_to_cart',
-                '.single_add_to_cart_button',
-            ];
+			this.captureDataListeners();
+		}
 
-            // add cart checkout button if enabled (filterable)
-            if (metorik_params.cart_checkout_button) {
-                classes.push('.button.checkout-button');
-            }
+		initAddToCartPopup() {
+			// bail if not rendered (means it's disabled)
+			if (!this.addToCartEmailWrapper.length) {
+				return;
+			}
 
-            // listen for page reloads after products added to the cart
-            $(document.body).on(
-                'wc_fragments_refreshed',
-                function (e) {
-                    // only if cart items 1 or more
-                    if (metorik_params.cart_items >= 1) {
-                        // show tippy on add cart button
-                        var singleButton = $('.single_add_to_cart_button');
-                        if (singleButton.length) {
-                            singleButton[0]._tippy.show();
-                        }
+			// add tippy for each class
+			this.selectors.forEach(this.initiateTippyForElement.bind(this));
 
-                        // show tippy on cart update button (if cart checkout button enabled)
-                        if (metorik_params.cart_checkout_button) {
-                            var cartButton = $('.button.checkout-button');
-                            if (cartButton.length) {
-                                cartButton[0]._tippy.show();
-                            }
-                        }
-                    }
-                }
-            );
+			// listen for cart reloads after products added to the cart
+			$(document.body).on('wc_fragments_refreshed', this.showTippyOnAddToCart.bind(this));
 
-            // add tippy for each class
-            classes.forEach(function(c) {
-                tippy(c, {
-                    html: '.add-cart-email-wrapper',
-                    theme: 'light',
-                    trigger: (c == '.button.ajax_add_to_cart') ? 'click' : 'manual',
-                    hideOnClick: true,
-                    interactive: true,
-                    arrow: true,
-                    distance: 15,
-                    placement: metorik_params.add_cart_popup_placement,
-                    wait: function(show) {
-                        // Only show if add to cart seen not true. Delay 100ms
-                        if(!addToCartSeen) {
-                            setTimeout(function() {
-                                show();
-                            }, 250);
-                        }
-                    },
-                    onShow: function () {
-                        // Set the add to cart fomr as having been senen so it doesn't get shown again.
-                        addToCartSeen = true;
+			// Listen for closing the add cart email form/tippy
+			$(document).on('click', '.metorik-add-cart-email-form .close-button', this.closeTippyAndMarkAsSeen.bind(this));
 
-                        // Make an AJAX request to set the add cart form as 'seen'.
-                        var data = {
-                            action: 'metorik_add_cart_form_seen',
-                        };
+			// Listen for add cart email input changes
+			$(document).on('input', '.metorik-add-cart-email-form .email-input', this.captureEmailFromAddCart.bind(this));
 
-                        $.post(metorik_params.ajaxurl, data, function (response) {
-                            //
-                        });
-                    },
-                });
-            });
-        }
+			// if an item was just added to the cart (from a product page), show the popup
+			if (metorik_params.cart_tracking.item_was_added_to_cart) {
+				this.showTippyOnAddToCart();
+			}
 
-        /**
-         * Listen for closing the add cart email form tippy.
-         */
-        $(document).on('click', '.metorik-add-cart-email-form .close-button', function (e) {
-            e.preventDefault();
+		}
 
-            // close/hide tippy if have
-            var button = $('.tippy-active');
-            if (button.length && button[0]._tippy) {
-                button[0]._tippy.hide();
-            }
-        });
+		initOptOutListener() {
+			// Listen for email usage opt-out clicks
+			$(document).on('click', '.metorik-email-usage-notice-link', this.optOutAndFadeNotice.bind(this));
 
-        /**
-         * Listen for add cart email input changes.
-         */
-        var addCartTimer;
-        $(document).on('input', '.metorik-add-cart-email-form .email-input', function(e) {
-            var _this = $(this);
-            var _wrapper = _this.parent();
+			$(document).on('change', '#contact-metorik\\/opt-in, #contact-metorik-opt-in', this.toggleOptInOptOut.bind(this));
+		}
 
-            // clear classes on input change
-            _wrapper.removeClass('success');
+		initiateTippyForElement(selector) {
+			tippy(selector, {
+				content: this.addToCartEmailWrapper.html(),
+				allowHTML: true,
+				theme: 'light',
+				trigger: (selector == '.ajax_add_to_cart') ? 'click' : 'manual',
+				hideOnClick: true,
+				interactive: true,
+				arrow: true,
+				offset: [0, 15],
+				placement: metorik_params.cart_tracking.add_cart_popup_placement,
+				onShow: () => {
+					// hide the tippy if the form has been seen already
+					if (this.addToCartSeen) {
+						return false;
+					}
+				},
+				onShown: () => {
+					if (this.addToCartShouldMarkAsSeen) {
+						this.markAddToCartAsSeen();
+					}
+				},
+			});
+		}
 
-            clearTimeout(addCartTimer);
-            addCartTimer = setTimeout(function() {
-                if (isValidEmail(_this.val())) {
-                    _wrapper.addClass('success');
-                    sendCartData(_this.val());
-                }
-            }, 500);
-        });
+		showTippyOnAddToCart(e) {
+			// bail if there's no cart items
+			if (metorik_params.cart_tracking.cart_items_count < 1) {
+				return;
+			}
 
-        /**
-         * Listen for email usage opt-out clicks and send AJAX request to do so.
-         */
-        $(document).on('click', '.metorik-email-usage-notice-link', function(e) {
-            e.preventDefault();
+			// show tippy on add cart button
+			var singleButton = $('.single_add_to_cart_button, .wc-block-components-product-button__button.add_to_cart_button');
+			if (singleButton.length) {
+				singleButton[0]._tippy.show();
+			}
+		}
 
-            // loading
-            $('.metorik-email-usage-notice').css({ opacity: '0.5', 'pointer-events': 'none' });
+		closeTippyAndMarkAsSeen(e) {
+			this.closeTippy(e);
+			this.markAddToCartAsSeen();
+		}
 
-            var data = {
-                action: 'metorik_email_opt_out',
-            };
+		closeTippy(e) {
+			e.preventDefault();
 
-            $.post(metorik_params.ajaxurl, data, function(response) {
-                // hide email usage notice
-                $('.metorik-email-usage-notice').css('display', 'none');
+			// close/hide tippy if active
+			const tippyRoot = e.target.closest('[data-tippy-root]');
+			if (tippyRoot && tippyRoot._tippy) {
+				tippyRoot._tippy.hide();
+			}
+		}
 
-                // close/hide tippy if have
-                var button = $('.tippy-active');
-                if (button.length && button[0]._tippy) {
-                    button[0]._tippy.hide();
-                }
+		markAddToCartAsSeen() {
+			// bail if already marked as seen
+			if (this.addToCartSeen) {
+				return;
+			}
 
-                // send cart so we can send email opted out
-                sendCartData();
-            });
-        });
-    }
+			// Set the add to cart form as having been seen, so it doesn't get shown again.
+			this.addToCartSeen = true;
+			$.post(metorik_params.cart_tracking.wc_ajax_seen_add_to_cart_form_url, { security: metorik_params.nonce });
+		}
+
+		captureDataListeners() {
+			const emailFields = document.querySelectorAll('.metorik-capture-email, #billing_email');
+			emailFields.forEach((field) => {
+				if (field) {
+					field.addEventListener('input', this.captureEmail.bind(this));
+				}
+			});
+
+			const checkoutFields = document.querySelectorAll('#billing_first_name, #billing_phone');
+			checkoutFields.forEach((field) => {
+				if (field) {
+					field.addEventListener('input', this.captureCheckoutField.bind(this));
+				}
+			});
+		}
+
+		captureEmailFromAddCart(e) {
+			const emailField = $(e.target);
+			const emailWrapper = emailField.parent();
+			const email = emailField.val();
+
+			// clear classes on input change
+			emailWrapper.removeClass('success');
+
+			clearTimeout(this.timers.add_cart);
+			this.timers.add_cart = setTimeout(() => {
+				if (this.isValidEmail(email)) {
+					emailWrapper.addClass('success');
+					this.captureCustomerData(email);
+
+					// close the tippy & mark as seen after a short delay
+					setTimeout(() => {
+						this.closeTippyAndMarkAsSeen(e);
+					}, 1500);
+				}
+			}, 500);
+		}
+
+		captureEmail(e) {
+			const email = e.target.value;
+			clearTimeout(this.timers.email_field);
+			this.timers.email_field = setTimeout(() => {
+				if (this.isValidEmail(email)) {
+					this.captureCustomerData(email);
+				}
+			}, 500);
+		}
+
+		captureCheckoutField(e) {
+			clearTimeout(this.timers.checkout_field);
+			this.timers.checkout_field = setTimeout(() => {
+				this.captureCustomerData();
+			}, 500);
+		}
+
+		captureCustomerData(customEmail) {
+			clearTimeout(this.timers.customer_data);
+			this.timers.customer_data = setTimeout(() => {
+				let email = null;
+				if (this.isValidEmail(customEmail)) {
+					email = customEmail;
+				} else {
+					const billingEmail = $('#billing_email').val();
+					if (this.isValidEmail(billingEmail)) {
+						email = billingEmail;
+					}
+				}
+
+				const firstName = $('#billing_first_name').val();
+				const lastName = $('#billing_last_name').val();
+				const phone = $('#billing_phone').val();
+
+				const data = {
+					email: email,
+					first_name: firstName,
+					last_name: lastName,
+					phone: phone,
+					security: metorik_params.nonce,
+				};
+
+				$.post(metorik_params.cart_tracking.wc_ajax_capture_customer_data_url, data);
+			}, 1000);
+		}
+
+		optOutAndFadeNotice(e) {
+			e.preventDefault();
+			const emailUsageNotice = $('.metorik-email-usage-notice');
+
+			// loading
+			emailUsageNotice.css({ opacity: '0.5', 'pointer-events': 'none' });
+
+			this.optOut(() => {
+				emailUsageNotice.hide();
+				this.closeTippy(e);
+			});
+		}
+
+		toggleOptInOptOut(e) {
+			e.preventDefault();
+			const optIn = e.target.checked;
+
+			if (optIn) {
+				this.optIn();
+			} else {
+				this.optOut();
+			}
+		}
+
+		optOut(callback = null) {
+			$.post(
+				metorik_params.cart_tracking.wc_ajax_email_opt_out_url,
+				{ security: metorik_params.nonce },
+				callback,
+			);
+		}
+
+		optIn(callback = null) {
+			$.post(
+				metorik_params.cart_tracking.wc_ajax_email_opt_in_url,
+				{ security: metorik_params.nonce },
+				callback,
+			);
+		}
+
+		isValidEmail(email) {
+			return /[^\s@]+@[^\s@]+\.[^\s@]+/.test(email);
+		}
+	}
+
+
+	var metorikSourceTracking = new MetorikSourceTracking();
+	var metorikCartTracking = new MetorikCartTracking();
+	metorikSourceTracking.init();
+	metorikCartTracking.init();
 })(jQuery);
