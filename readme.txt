@@ -4,7 +4,7 @@ Tags: woocommerce, woocommerce reports, woocommerce emails, woocommerce carts, w
 Requires at least: 5.0
 Requires PHP: 7.4
 Tested up to: 6.6.1
-Stable tag: 2.0.1
+Stable tag: 2.0.2
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -141,12 +141,15 @@ To hide the links from individual orders/products, you can click the 'Screen Opt
 To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes while logged in as an administrator.
 
 == Changelog ==
+= 2.0.2 =
+* Fixed an issue when querying for updated customers on a multisite.
+
 = 2.0.1 =
 * Fixed an issue when querying for updated customers.
 
 = 2.0.0 =
 * We've overhauled the cart tracking feature in the Metorik Helper. The new method is faster and more reliable, making use of WooCommerce internal hooks instead of front-end javascript. This significantly improves the performance of the feature and improves compatibility with different checkout setups and third-party plugins.
- * We've added WooCommerce Blocks support for all features of the Metorik Helper plugin, including prompting to save a cart when adding an item to cart as well as during the checkout (via a new opt-in/opt-out checkbox), cart restoration and source tracking. To take full advantage of Woo Blocks support with Metorik, please make sure to upgrade to WooCommerce 9.1 or higher. Additionally, make sure to visit your Metorik dashboard's Cart Settings page to enable some new settings for WooCommerce blocks integration.
+* We've added WooCommerce Blocks support for all features of the Metorik Helper plugin, including prompting to save a cart when adding an item to cart as well as during the checkout (via a new opt-in/opt-out checkbox), cart restoration and source tracking. To take full advantage of Woo Blocks support with Metorik, please make sure to upgrade to WooCommerce 9.1 or higher. Additionally, make sure to visit your Metorik dashboard's Cart Settings page to enable some new settings for WooCommerce blocks integration.
 * Cart restoration will now restore the customer's first name and e-mail into the checkout flow when possible.
 * We've made several improvements to the source tracking system. We've removed the reliance on hidden fields in the checkout process, which makes the system more performant and improves compatibility with different checkout setups and third-party plugins.
 * We've added several action hooks and filters to allow for further customization of the Metorik Helper's behaviour.
