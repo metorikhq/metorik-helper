@@ -142,7 +142,7 @@ To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes wh
 
 == Changelog ==
 = 2.0.1 =
-*Fixed an issue when querying for updated customers
+* Fixed an issue when querying for updated customers.
 
 = 2.0.0 =
 * We've overhauled the cart tracking feature in the Metorik Helper. The new method is faster and more reliable, making use of WooCommerce internal hooks instead of front-end javascript. This significantly improves the performance of the feature and improves compatibility with different checkout setups and third-party plugins.
