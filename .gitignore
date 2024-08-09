@@ -2,10 +2,11 @@
 /node_modules/
 *.DS_Store
 ._*
+.idea
 
 # Tests - local only
+.github
 /wp-content
 /wp
-/tests/coverage
+/tests
 .phpunit.result.cache
-
