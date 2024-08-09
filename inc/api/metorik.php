@@ -187,14 +187,14 @@ class Metorik_Helper_API_Metorik extends WC_REST_Posts_Controller
         /*
          * Update token.
          */
-        update_option('metorik_auth_token', $token);
+        update_option( Metorik_Cart_Tracking::AUTH_TOKEN_OPTION, $token);
 
         /**
          * Prepare response.
          */
         $data = array(
             'updated' => true,
-            'token'   => get_option('metorik_auth_token'),
+            'token'   => Metorik_Cart_Tracking::get_auth_token(),
         );
 
         /**

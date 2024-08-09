@@ -1,0 +1,8 @@
+# Ignore built files:
+vendor
+node_modules
+assets
+composer.json
+composer.lock
+package.json
+.github
