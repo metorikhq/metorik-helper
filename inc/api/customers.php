@@ -269,7 +269,7 @@ class Metorik_Helper_API_Customers extends WC_REST_Posts_Controller
 					INNER JOIN $wpdb->usermeta AS b
 						ON b.user_id = a.user_id
 						AND b.meta_key = 'last_update'
-						AND b.meta_value > %s
+						AND b.meta_value > %d
 					WHERE a.meta_key = %s
 					LIMIT %d, %d
 				",
