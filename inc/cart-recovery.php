@@ -59,10 +59,13 @@ class Metorik_Cart_Recovery {
 		// set the checkout URL to use
 		$checkout_url = $this->get_checkout_url();
 
-		// forward along any UTM or metorik params or lang
+		// forward along any params from allowed list
 		foreach ( $request->get_params() as $key => $val ) {
-			if ( 0 === strpos( $key, 'utm_' ) || 0 === strpos( $key, 'mtk' ) || 0 === strpos( $key, 'lang' ) ) {
-				$checkout_url = add_query_arg( $key, $val, $checkout_url );
+			$allowed_key_prefixes = array_merge([ 'utm_', 'mtk', 'lang' ], apply_filters( 'metorik_cart_recovery_allowed_url_params', [] ) );
+			foreach($allowed_key_prefixes as $prefix) {
+				if ( 0 === strpos( $key, $prefix ) ) {
+					$checkout_url = add_query_arg( $key, $val, $checkout_url );
+				}
 			}
 		}
 
