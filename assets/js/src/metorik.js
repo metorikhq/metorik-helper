@@ -336,9 +336,27 @@
 		}
 	}
 
+	let metorikSourceTracking;
+	let metorikCartTracking;
 
-	var metorikSourceTracking = new MetorikSourceTracking();
-	var metorikCartTracking = new MetorikCartTracking();
-	metorikSourceTracking.init();
-	metorikCartTracking.init();
+	function initMetorik() {
+		if (typeof metorik_params === 'undefined') {
+			return;
+		}
+
+		if (!metorikSourceTracking) {
+			metorikSourceTracking = new MetorikSourceTracking();
+			metorikSourceTracking.init();
+		}
+
+		if (!metorikCartTracking) {
+			metorikCartTracking = new MetorikCartTracking();
+			metorikCartTracking.init();
+		}
+	}
+
+	initMetorik();
+
+	// adds compatibility for Complianz consent plugin
+	$(document).on('cmplz_run_after_all_scripts', initMetorik);
 })(jQuery);

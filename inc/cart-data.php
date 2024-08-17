@@ -13,7 +13,7 @@ class Metorik_Cart_Data {
 	public const LAST_CART_HASH = 'metorik_last_cart_hash';
 
 	public function __construct() {
-		$this->cart = WC()->cart->get_cart();
+		$this->cart = isset( WC()->cart ) ? WC()->cart->get_cart() : [];
 		$this->determine_customer_data();
 	}
 
@@ -27,7 +27,8 @@ class Metorik_Cart_Data {
 	public function determine_customer_id() {
 		if ( is_user_logged_in() ) {
 			$this->customer_id = get_current_user_id();
-		} elseif ( ! empty( WC()->session->get( 'customer' ) )
+		} elseif ( ! empty(WC()->session) &&
+		           ! empty( WC()->session->get( 'customer' ) )
 		           && isset( WC()->session->get( 'customer' )['id'] )
 		           && absint( WC()->session->get( 'customer' )['id'] ) > 0
 		) {
@@ -102,7 +103,7 @@ class Metorik_Cart_Data {
 			'locale'                       => determine_locale(),
 			'email_opt_out'                => $this->get_customer_email_opt_out(),
 			'client_session'               => $this->get_client_session_data(),
-			'display_prices_including_tax' => WC()->cart->display_prices_including_tax(),
+			'display_prices_including_tax' => isset( WC()->cart ) && WC()->cart->display_prices_including_tax(),
 		];
 	}
 
@@ -112,7 +113,7 @@ class Metorik_Cart_Data {
 	 * @return bool
 	 */
 	public function cart_is_empty() {
-		return (bool) WC()->cart->is_empty();
+		return (bool) isset( WC()->cart ) && WC()->cart->is_empty();
 	}
 
 	/**
@@ -287,6 +288,10 @@ class Metorik_Cart_Data {
 	 * @return float $total
 	 */
 	protected function get_cart_total() {
+		if ( ! isset( WC()->cart ) ) {
+			return 0;
+		}
+
 		if (
 			is_checkout() ||
 			is_cart() ||
@@ -305,6 +310,10 @@ class Metorik_Cart_Data {
 	 * @return float $subtotal
 	 */
 	public function get_cart_subtotal() {
+		if ( ! isset( WC()->cart ) ) {
+			return 0;
+		}
+
 		if ( 'excl' === WC()->cart->display_prices_including_tax() ) {
 			$subtotal = WC()->cart->subtotal_ex_tax;
 		} else {
@@ -320,6 +329,10 @@ class Metorik_Cart_Data {
 	 * @return float $tax
 	 */
 	public function get_cart_tax() {
+		if ( ! isset( WC()->cart ) ) {
+			return 0;
+		}
+
 		return WC()->cart->get_total_tax();
 	}
 
@@ -329,6 +342,10 @@ class Metorik_Cart_Data {
 	 * @return float $discount
 	 */
 	public function get_cart_discount() {
+		if ( ! isset( WC()->cart ) ) {
+			return 0;
+		}
+
 		$discount_total = WC()->cart->get_discount_total();
 		$discount_tax   = WC()->cart->get_discount_tax();
 
@@ -345,6 +362,10 @@ class Metorik_Cart_Data {
 	 * @return float $shipping
 	 */
 	public function get_cart_shipping() {
+		if ( ! isset( WC()->cart ) ) {
+			return 0;
+		}
+
 		$shipping_total = WC()->cart->get_shipping_total();
 		$shipping_tax   = WC()->cart->get_shipping_tax();
 
@@ -361,6 +382,10 @@ class Metorik_Cart_Data {
 	 * @return float $fee
 	 */
 	public function get_cart_fee() {
+		if ( ! isset( WC()->cart ) ) {
+			return 0;
+		}
+
 		$fee_total = (float) WC()->cart->get_fee_total();
 		$fee_tax   = (float) WC()->cart->get_fee_tax();
 
