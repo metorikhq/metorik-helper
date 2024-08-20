@@ -74,7 +74,7 @@
 			}
 
 			document.cookie = metorik_params.source_tracking.cookie_name + '=' +
-				this.cookieContent() + '; expires=' + this.cookieExpiration() + '; Secure';
+				this.cookieContent() + '; expires=' + this.cookieExpiration() + '; Secure; path=/;';
 		}
 	}
 
@@ -160,7 +160,12 @@
 						return false;
 					}
 				},
-				onShown: () => {
+				onShown: (instance) => {
+					// scroll to the popover
+					if (metorik_params.cart_tracking.add_cart_popup_should_scroll_to) {
+						setTimeout(() => instance.popper.scrollIntoView({ behavior: 'smooth', block: 'center' }), 500);
+					}
+
 					if (this.addToCartShouldMarkAsSeen) {
 						this.markAddToCartAsSeen();
 					}
