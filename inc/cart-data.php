@@ -27,7 +27,7 @@ class Metorik_Cart_Data {
 	public function determine_customer_id() {
 		if ( is_user_logged_in() ) {
 			$this->customer_id = get_current_user_id();
-		} elseif ( ! empty(WC()->session) &&
+		} elseif ( ! empty( WC()->session ) &&
 		           ! empty( WC()->session->get( 'customer' ) )
 		           && isset( WC()->session->get( 'customer' )['id'] )
 		           && absint( WC()->session->get( 'customer' )['id'] ) > 0
@@ -141,7 +141,7 @@ class Metorik_Cart_Data {
 	 * @return null|string $hash The last cart hash or null if not set
 	 */
 	public function get_last_hash() {
-		return WC()->session->get( self::LAST_CART_HASH );
+		return WC()->session ? WC()->session->get( self::LAST_CART_HASH ) : null;
 	}
 
 	/**
@@ -151,7 +151,9 @@ class Metorik_Cart_Data {
 	 * @return void
 	 */
 	public function save_last_hash() {
-		WC()->session->set( self::LAST_CART_HASH, $this->get_hash() );
+		if ( WC()->session ) {
+			WC()->session->set( self::LAST_CART_HASH, $this->get_hash() );
+		}
 	}
 
 
@@ -186,7 +188,9 @@ class Metorik_Cart_Data {
 			update_user_meta( $user_id, '_metorik_cart_token', $token );
 		}
 
-		WC()->session->set( 'metorik_cart_token', $token );
+		if ( WC()->session ) {
+			WC()->session->set( 'metorik_cart_token', $token );
+		}
 
 		return $token;
 	}
@@ -216,7 +220,9 @@ class Metorik_Cart_Data {
 	 * @return void
 	 */
 	public static function set_user_has_seen_add_to_cart_form() {
-		WC()->session->set( 'metorik_seen_add_to_cart_form', true );
+		if ( WC()->session ) {
+			WC()->session->set( 'metorik_seen_add_to_cart_form', true );
+		}
 	}
 
 	/**
@@ -249,7 +255,9 @@ class Metorik_Cart_Data {
 	 * @return bool the opt out setting
 	 */
 	public static function set_customer_email_opt_out( $opt_out = true ) {
-		WC()->session->set( 'metorik_customer_email_opt_out', $opt_out );
+		if ( WC()->session ) {
+			WC()->session->set( 'metorik_customer_email_opt_out', $opt_out );
+		}
 
 		if ( $user_id = get_current_user_id() ) {
 			update_user_meta( $user_id, '_metorik_customer_email_opt_out', $opt_out );

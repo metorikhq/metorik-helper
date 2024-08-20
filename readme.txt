@@ -141,10 +141,15 @@ To hide the links from individual orders/products, you can click the 'Screen Opt
 To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes while logged in as an administrator.
 
 == Changelog ==
+= 2.0.4 =
+* Fixed an issue with source tracking when the initial URL was on a sub-path of the store.
+* Fixed an error that could occur when WooCommerce's session wasn't initialized.
+* Added an auto-scroll to the cart tracking popup when it's opened. This can be disabled with a filter if desired.
+
 = 2.0.3 =
-* Improved javascript compatibility with some cookie/GDPR consent plugins such as Complianz
-* Added a filter to allow additional parameters to be passed to the cart recovery URL
-* Fixed an error that could occur when WooCommerce's cart wasn't initialized
+* Improved javascript compatibility with some cookie/GDPR consent plugins such as Complianz.
+* Added a filter to allow additional parameters to be passed to the cart recovery URL.
+* Fixed an error that could occur when WooCommerce's cart wasn't initialized.
 
 = 2.0.2 =
 * Fixed an issue when querying for updated customers on a multisite.

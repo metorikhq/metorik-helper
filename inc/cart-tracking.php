@@ -180,6 +180,11 @@ class Metorik_Cart_Tracking {
 			return;
 		}
 
+		// if WC isn't loaded or session isn't available, bail
+		if ( ! function_exists('WC') || empty( WC()->session ) ) {
+			return;
+		}
+
 		// currently checking out? don't sync
 		// we don't want to sync the cart when checking out, otherwise we end up with an empty cart sync
 		// instead, the cart will get updated when the order is synced to Metorik

@@ -4,7 +4,7 @@
  * Plugin Name: Metorik Helper
  * Plugin URI: https://metorik.com
  * Description: Reports, integrations, automatic emails, and cart tracking for WooCommerce stores.
- * Version: 2.0.3
+ * Version: 2.0.4
  * Author: Metorik
  * Author URI: https://metorik.com
  * Text Domain: metorik
@@ -18,7 +18,7 @@ class Metorik_Helper {
 	/**
 	 * Current version of Metorik.
 	 */
-	public $version = '2.0.3';
+	public $version = '2.0.4';
 
 	/**
 	 * URL dir for plugin.
@@ -136,6 +136,7 @@ class Metorik_Helper {
 				'wc_ajax_email_opt_out_url'         => WC_AJAX::get_endpoint( 'metorik_email_opt_out' ),
 				'wc_ajax_email_opt_in_url'          => WC_AJAX::get_endpoint( 'metorik_email_opt_in' ),
 				'wc_ajax_seen_add_to_cart_form_url' => WC_AJAX::get_endpoint( 'metorik_seen_add_to_cart_form' ),
+				'add_cart_popup_should_scroll_to'   => apply_filters( 'metorik_acp_should_scroll_to', true ),
 				'add_cart_popup_placement'          => apply_filters( 'metorik_acp_placement', 'bottom' ),
 				'add_to_cart_should_mark_as_seen'   => apply_filters( 'metorik_acp_should_mark_as_seen', true ),
 				'add_to_cart_form_selectors'        => apply_filters( 'metorik_acp_form_selectors', [
