@@ -4,7 +4,7 @@ Tags: woocommerce, woocommerce reports, woocommerce emails, woocommerce carts, w
 Requires at least: 5.0
 Requires PHP: 7.4
 Tested up to: 6.6.1
-Stable tag: 2.0.3
+Stable tag: 2.0.4
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
