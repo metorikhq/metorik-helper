@@ -1,106 +1,67 @@
-#, fuzzy
+# Copyright (C) 2024 Metorik
+# This file is distributed under the same license as the Metorik Helper plugin.
 msgid ""
 msgstr ""
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
-"Project-Id-Version: Metorik Helper\n"
-"POT-Creation-Date: 2019-04-20 11:12+1000\n"
-"PO-Revision-Date: 2019-04-20 11:11+1000\n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"Project-Id-Version: Metorik Helper 2.0.6\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/metorik-helper\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.1\n"
-"X-Poedit-Basepath: ..\n"
-"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
-"X-Poedit-WPHeader: metorik-helper.php\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
-"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
-"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
-"X-Poedit-SearchPath-0: .\n"
-"X-Poedit-SearchPathExcluded-0: *.js\n"
+"POT-Creation-Date: 2024-09-25T19:50:43+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.10.0\n"
+"X-Domain: metorik\n"
 
-#: inc/api/customers.php:139
-msgid "Required to be true, as resource does not support trashing."
+#. Plugin Name of the plugin
+#: metorik-helper.php
+msgid "Metorik Helper"
 msgstr ""
 
-#: inc/api/customers.php:362
-msgid "Invalid resource id."
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+#: metorik-helper.php
+msgid "https://metorik.com"
 msgstr ""
 
-#: inc/api/customers.php:546 inc/api/metorik.php:81
-msgid "Sorry, you cannot list resources."
+#. Description of the plugin
+#: metorik-helper.php
+msgid "Reports, integrations, automatic emails, and cart tracking for WooCommerce stores."
 msgstr ""
 
-#: inc/api/metorik.php:93
-msgid "Sorry, you are not allowed to create resources."
-msgstr ""
-
-#: inc/api/metorik.php:140
-msgid "Invalid status."
-msgstr ""
-
-#: inc/api/metorik.php:179
-msgid "Invalid token."
-msgstr ""
-
-#: inc/api/metorik.php:244
-msgid "Missing settings."
-msgstr ""
-
-#: inc/api/orders.php:364
-msgid "WooCommerce"
-msgstr ""
-
-#: inc/carts.php:426
-msgid "Order cart recovered by Metorik."
-msgstr ""
-
-#: inc/carts.php:492
-msgid ""
-"Sorry, we were not able to restore your cart. Please try adding your items "
-"to your cart again."
-msgstr ""
-
-#. translators: Placeholders: %1$s - opening HTML <a> link tag, %2$s - closing HTML </a> link tag
-#: inc/carts.php:695
-#, php-format
-msgid ""
-"We save your email and cart so we can send you reminders - %1$sdon't email me"
-"%2$s."
-msgstr ""
-
-#. Author of the plugin/theme
-#: inc/ui.php:61 inc/ui.php:62
+#. Author of the plugin
+#: metorik-helper.php
+#: inc/admin-ui.php:75
+#: inc/admin-ui.php:79
+#: inc/admin-ui.php:89
 msgid "Metorik"
 msgstr ""
 
-#: metorik-helper.php:87
-#, php-format
+#: inc/cart-recovery.php:87
+msgid "Sorry, we were not able to restore your cart. Please try adding your items to your cart again."
+msgstr ""
+
+#: inc/cart-tracking.php:306
+msgid "Order cart recovered by Metorik."
+msgstr ""
+
+#: inc/cart-tracking.php:344
+msgid "Opt-in to receive cart reminders e-mails from this store"
+msgstr ""
+
+#: inc/cart-tracking.php:538
+msgid "We save your email and cart so we can send you reminders - %1$sdon't email me%2$s."
+msgstr ""
+
+#: metorik-helper.php:156
 msgid "Metorik Helper requires %s to be installed and active."
 msgstr ""
 
-#: metorik-helper.php:107
-#, php-format
+#: metorik-helper.php:174
 msgid "The Metorik Helper is active! Go back to %s to complete the connection."
 msgstr ""
 
 #: templates/add-cart-email-form.php:30
 msgid "Your email"
-msgstr ""
-
-#. Plugin Name of the plugin/theme
-msgid "Metorik Helper"
-msgstr ""
-
-#. Plugin URI of the plugin/theme
-#. Author URI of the plugin/theme
-msgid "https://metorik.com"
-msgstr ""
-
-#. Description of the plugin/theme
-msgid ""
-"Reports, integrations, automatic emails, and cart tracking for WooCommerce "
-"stores."
 msgstr ""

@@ -1,5 +1,8 @@
 <?php
 
+use Automattic\WooCommerce\Blocks\Domain\Services\CheckoutFields;
+use Automattic\WooCommerce\Blocks\Package;
+
 /**
  * This class implements Metorik's Cart Tracking
  *
@@ -55,6 +58,9 @@ class Metorik_Cart_Tracking {
 		// register block checkout fields
 		add_action( 'woocommerce_blocks_loaded', [ $this, 'register_block_checkout_fields' ] );
 
+		// remove the opt-in field from the account page - we only want it on checkout
+		add_filter( 'woocommerce_edit_account_form_fields', [ $this, 'deregister_optin_on_account_page' ], 1 );
+
 		// Checkout
 		add_action( 'woocommerce_store_api_checkout_order_processed', [ $this, 'checkout_order_processed' ] );
 
@@ -83,6 +89,11 @@ class Metorik_Cart_Tracking {
 	 * @return void
 	 */
 	protected function initiate_sync_actions() {
+		// stop if metorik cart tracking disabled
+		if ( ! self::cart_tracking_enabled() ) {
+			return;
+		}
+
 		$woo_cart_actions = apply_filters(
 			'metorik_initate_cart_sync_events',
 			[
@@ -121,6 +132,7 @@ class Metorik_Cart_Tracking {
 		self::$auth_token      = null;
 		self::$enabled         = null;
 		self::$dispatched_sync = false;
+		self::instance()->initiate_sync_actions();
 	}
 
 	/**
@@ -181,7 +193,7 @@ class Metorik_Cart_Tracking {
 		}
 
 		// if WC isn't loaded or session isn't available, bail
-		if ( ! function_exists('WC') || empty( WC()->session ) ) {
+		if ( ! function_exists( 'WC' ) || empty( WC()->session ) ) {
 			return;
 		}
 
@@ -331,6 +343,11 @@ class Metorik_Cart_Tracking {
 	 * @throws Exception
 	 */
 	public function register_block_checkout_fields() {
+		// stop if metorik cart tracking disabled
+		if ( ! self::cart_tracking_enabled() ) {
+			return;
+		}
+
 		if ( ! function_exists( 'woocommerce_register_additional_checkout_field' ) ) {
 			return;
 		}
@@ -375,6 +392,25 @@ class Metorik_Cart_Tracking {
 			10,
 			4
 		);
+	}
+
+	/**
+	 * Deregister Metorik's opt-in checkout field on the account page
+	 * We only want the opt-in field on the checkout page
+	 *
+	 * @return void
+	 */
+	public function deregister_optin_on_account_page() {
+		if ( ! function_exists( 'woocommerce_register_additional_checkout_field' ) ) {
+			return;
+		}
+
+		if ( is_admin() ) {
+			return;
+		}
+
+		$checkout_fields = Package::container()->get( CheckoutFields::class );
+		$checkout_fields->deregister_checkout_field( 'metorik/opt-in' );
 	}
 
 	/**

@@ -61,8 +61,12 @@ class Metorik_Cart_Recovery {
 
 		// forward along any params from allowed list
 		foreach ( $request->get_params() as $key => $val ) {
-			$allowed_key_prefixes = array_merge([ 'utm_', 'mtk', 'lang' ], apply_filters( 'metorik_cart_recovery_allowed_url_params', [] ) );
-			foreach($allowed_key_prefixes as $prefix) {
+			$allowed_key_prefixes = array_merge( [
+				'utm_',
+				'mtk',
+				'lang'
+			], apply_filters( 'metorik_cart_recovery_allowed_url_params', [] ) );
+			foreach ( $allowed_key_prefixes as $prefix ) {
 				if ( 0 === strpos( $key, $prefix ) ) {
 					$checkout_url = add_query_arg( $key, $val, $checkout_url );
 				}
@@ -80,7 +84,17 @@ class Metorik_Cart_Recovery {
 
 			// check for coupon in recovery URL to apply before checkout redirect
 			if ( isset( $request['coupon'] ) && $coupon = rawurldecode( $request['coupon'] ) ) {
-				$checkout_url = add_query_arg( array( 'coupon' => wc_clean( $coupon ) ), $checkout_url );
+				$checkout_url = add_query_arg( [ 'coupon' => wc_clean( $coupon ) ], $checkout_url );
+			}
+
+			if ( function_exists( 'wcs_cart_contains_early_renewal' ) && wcs_cart_contains_early_renewal() ) {
+				$cart_item = wcs_cart_contains_early_renewal();
+				if ( ! empty( $cart_item ) ) {
+					$subscription_id = $cart_item['subscription_renewal']['subscription_id'];
+					if ( ! empty( $subscription_id ) ) {
+						$checkout_url = add_query_arg( [ 'subscription_renewal_early' => $subscription_id ], $checkout_url );
+					}
+				}
 			}
 		} catch ( Exception $e ) {
 			// add a notice
@@ -216,6 +230,7 @@ class Metorik_Cart_Recovery {
 
 		// Restore cart
 		WC()->session->set( 'cart', $cart );
+		WC()->cart->cart_contents = $cart;
 
 		// Set the cart token and pending recovery in session
 		WC()->session->set( 'metorik_cart_token', $cart_token );
