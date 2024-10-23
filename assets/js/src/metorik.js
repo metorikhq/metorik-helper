@@ -57,7 +57,7 @@
 				session_count: sbjs.get.udata.vst,
 			};
 
-			return JSON.stringify(cookieContent);
+			return encodeURIComponent(JSON.stringify(cookieContent));
 		}
 
 		cookieExpiration() {

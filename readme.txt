@@ -4,7 +4,7 @@ Tags: woocommerce, woocommerce reports, woocommerce emails, woocommerce carts, w
 Requires at least: 5.0
 Requires PHP: 7.4
 Tested up to: 6.6.2
-Stable tag: 2.0.6
+Stable tag: 2.0.7
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -141,6 +141,10 @@ To hide the links from individual orders/products, you can click the 'Screen Opt
 To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes while logged in as an administrator.
 
 == Changelog ==
+= 2.0.7 =
+* Minor improvements to cart tracking.
+
+
 = 2.0.6 =
 * Update plugin translations.
 * De-register the cart tracking opt-in checkbox on the account page. The checkbox is now only shown on the checkout pages.
