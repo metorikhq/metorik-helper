@@ -173,7 +173,10 @@ class Metorik_Cart_Data {
 
 		if ( ! empty( $user_id ) ) {
 			$token          = get_user_meta( $user_id, '_metorik_cart_token', true );
-			$from_user_meta = true;
+
+			if (!empty($token)) {
+				$from_user_meta = true;
+			}
 		}
 
 		if ( empty( $token ) && WC()->session ) {
@@ -240,7 +243,7 @@ class Metorik_Cart_Data {
 			$opt_out = get_user_meta( $user_id, '_metorik_customer_email_opt_out', true );
 		}
 
-		if ( empty( $token ) && WC()->session ) {
+		if ( empty( $opt_out ) && WC()->session ) {
 			$opt_out = WC()->session->get( 'metorik_customer_email_opt_out' );
 		}
 

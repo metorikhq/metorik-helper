@@ -12,6 +12,7 @@ class Metorik_Cart_Tracking {
 	private static $auth_token = null;
 	private static $enabled = null;
 	private static $dispatched_sync = false;
+	private static $no_sync = false;
 	public const API_URL = 'https://app.metorik.com/api/store';
 	public const AUTH_TOKEN_OPTION = 'metorik_auth_token';
 
@@ -21,6 +22,12 @@ class Metorik_Cart_Tracking {
 		}
 
 		return self::$instance;
+	}
+
+	public static function without_cart_tracking(callable $callback) : void {
+		self::$no_sync = true;
+		$callback();
+		self::$no_sync = false;
 	}
 
 	public function __construct() {
@@ -103,6 +110,7 @@ class Metorik_Cart_Tracking {
 				'woocommerce_cart_item_restored',
 				'woocommerce_cart_item_set_quantity',
 				'woocommerce_after_calculate_totals',
+				'woocommerce_guest_session_to_user_id',
 			]
 		);
 
@@ -171,6 +179,11 @@ class Metorik_Cart_Tracking {
 			return;
 		}
 
+		// stop if told not to sync
+		if ( self::$no_sync ) {
+			return;
+		}
+
 		// stop if metorik cart tracking disabled
 		if ( ! self::cart_tracking_enabled() ) {
 			return;
@@ -189,6 +202,11 @@ class Metorik_Cart_Tracking {
 	public function sync_cart() {
 		// stop if metorik cart tracking disabled
 		if ( ! self::cart_tracking_enabled() ) {
+			return;
+		}
+
+		// stop if told not to sync
+		if ( self::$no_sync ) {
 			return;
 		}
 
@@ -234,6 +252,37 @@ class Metorik_Cart_Tracking {
 	}
 
 	/**
+	 * Delete a cart from Metorik for specified token.
+	 *
+	 * @param string $cart_token
+	 *
+	 * @return void
+	 */
+	public function delete_cart( $cart_token ) {
+		// stop if metorik cart tracking disabled
+		if ( ! self::cart_tracking_enabled() ) {
+			return;
+		}
+
+		// stop if told not to sync
+		if ( self::$no_sync ) {
+			return;
+		}
+
+		$cart_data =  [
+			'token' => $cart_token,
+			'cart'  => false,
+		];
+
+		$this->send_cart_data( [
+			'api_token' => self::get_auth_token(),
+			'data'      => $cart_data
+		] );
+
+		do_action( 'metorik_synced_cart', $cart_data );
+	}
+
+	/**
 	 * Send cart data to Metorik.
 	 *
 	 * @param array $cart_data
@@ -255,15 +304,36 @@ class Metorik_Cart_Tracking {
 	 * @return void
 	 */
 	public function link_customer_existing_cart( $user_login, $user ) {
-		$session_token = ( WC()->session ) ? WC()->session->get( 'metorik_cart_token' ) : '';
-
-		// if session token and user, set in user meta
-		if ( $session_token && $user ) {
-			update_user_meta( $user->ID, '_metorik_cart_token', $session_token );
+		// no user? bail
+		if (empty($user)) {
+			return;
 		}
 
-		// trigger a sync
-		$this->initiate_sync();
+		// stop if metorik cart tracking disabled
+		if ( ! self::cart_tracking_enabled() ) {
+			return;
+		}
+
+		// get the session token
+		$session_token = ( WC()->session ) ? WC()->session->get( 'metorik_cart_token' ) : '';
+
+		// no session token? nothing else to do, it will use the user meta token or generate a new one if needed, on the next cart update
+		if ( empty( $session_token ) ) {
+			return;
+		}
+
+		// get the user meta token
+		$existing_token = get_user_meta( $user->ID, '_metorik_cart_token', true );
+
+		// if there's a token mismatch, we'll proceed with the user meta one, and then delete the session one in Metorik
+		if ( !empty($existing_token) && $existing_token !== $session_token ) {
+			$this->delete_cart($session_token);
+
+			if ( WC()->session ) {
+				WC()->session->set( 'metorik_cart_token', $existing_token );
+			}
+
+		}
 	}
 
 	/**

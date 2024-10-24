@@ -209,87 +209,89 @@ class Metorik_Cart_Recovery {
 			throw new Exception( 'Error getting cart from Metorik' );
 		}
 
-		// get cart
-		$cart = $body->data->cart;
 
-		// need to cast all to an array for putting back into the session
-		$cart = json_decode( json_encode( $cart ), true );
+		// Recover the cart, but don't trigger cart tracking
+		Metorik_Cart_Tracking::without_cart_tracking( function () use ( $body, $cart_token ) {
+			// get cart
+			$cart = $body->data->cart;
 
-		// Clear any existing cart, but don't trigger cart tracking
-		remove_action( 'woocommerce_cart_emptied', [ Metorik_Cart_Tracking::instance(), 'initiate_sync' ] );
-		WC()->cart->empty_cart();
+			// need to cast all to an array for putting back into the session
+			$cart = json_decode( json_encode( $cart ), true );
 
-		// set the variation to an empty array if it doesn't exist
-		// this is workaround for a php notice that can occur later when Woo pulls the cart
-		foreach ( $cart as $key => $cart_item ) {
-			if ( ! isset( $cart_item['variation'] ) ) {
-				$cart_item['variation'] = [];
-				$cart[ $key ]           = $cart_item;
-			}
-		}
+			WC()->cart->empty_cart();
 
-		// Restore cart
-		WC()->session->set( 'cart', $cart );
-		WC()->cart->cart_contents = $cart;
-
-		// Set the cart token and pending recovery in session
-		WC()->session->set( 'metorik_cart_token', $cart_token );
-		WC()->session->set( 'metorik_pending_recovery', true );
-
-		// Set the cart token / pending recovery in user meta if this cart has a user
-		$user_id = $body->data->customer_id;
-		if ( $user_id ) {
-			update_user_meta( $user_id, '_metorik_cart_token', $cart_token );
-			update_user_meta( $user_id, '_metorik_pending_recovery', true );
-		}
-
-		// restore customer email
-		if ( ! empty( $body->data->email ) ) {
-			WC()->customer->set_email( sanitize_email( $body->data->email ) );
-			WC()->customer->set_billing_email( sanitize_email( $body->data->email ) );
-		}
-
-		// restore customer name
-		if ( ! empty( $body->data->first_name ) ) {
-			$first_name = $body->data->first_name;
-			WC()->customer->set_first_name( sanitize_text_field( $first_name ) );
-			WC()->customer->set_billing_first_name( sanitize_text_field( $first_name ) );
-			WC()->customer->set_shipping_first_name( sanitize_text_field( $first_name ) );
-		}
-
-		// Customer phone
-		if ( ! empty( $body->data->phone ) ) {
-			WC()->customer->set_billing_phone( sanitize_text_field( $body->data->phone ) );
-		}
-
-		WC()->customer->save();
-
-		// Client session
-		$session = $body->data->client_session;
-		if ( $session ) {
-			if ( isset( $session->applied_coupons ) ) {
-				$applied_coupons = (array) $session->applied_coupons;
-				WC()->session->set( 'applied_coupons', $this->valid_coupons( $applied_coupons ) );
+			// set the variation to an empty array if it doesn't exist
+			// this is workaround for a php notice that can occur later when Woo pulls the cart
+			foreach ( $cart as $key => $cart_item ) {
+				if ( ! isset( $cart_item['variation'] ) ) {
+					$cart_item['variation'] = [];
+					$cart[ $key ]           = $cart_item;
+				}
 			}
 
-			if ( isset( $session->chosen_shipping_methods ) ) {
-				$chosen_shipping_methods = (array) $session->chosen_shipping_methods;
-				WC()->session->set( 'chosen_shipping_methods', $chosen_shipping_methods );
+			// Restore cart
+			WC()->session->set( 'cart', $cart );
+			WC()->cart->cart_contents = $cart;
+
+			// Set the cart token and pending recovery in session
+			WC()->session->set( 'metorik_cart_token', $cart_token );
+			WC()->session->set( 'metorik_pending_recovery', true );
+
+			// Set the cart token / pending recovery in user meta if this cart has a user
+			$user_id = $body->data->customer_id;
+			if ( $user_id ) {
+				update_user_meta( $user_id, '_metorik_cart_token', $cart_token );
+				update_user_meta( $user_id, '_metorik_pending_recovery', true );
 			}
 
-			if ( isset( $session->shipping_method_counts ) ) {
-				$shipping_method_counts = (array) $session->shipping_method_counts;
-				WC()->session->set( 'shipping_method_counts', $shipping_method_counts );
+			// restore customer email
+			if ( ! empty( $body->data->email ) ) {
+				WC()->customer->set_email( sanitize_email( $body->data->email ) );
+				WC()->customer->set_billing_email( sanitize_email( $body->data->email ) );
 			}
 
-			if ( isset( $session->chosen_payment_method ) ) {
-				$chosen_payment_method = $session->chosen_payment_method;
-				WC()->session->set( 'chosen_payment_method', $chosen_payment_method );
+			// restore customer name
+			if ( ! empty( $body->data->first_name ) ) {
+				$first_name = $body->data->first_name;
+				WC()->customer->set_first_name( sanitize_text_field( $first_name ) );
+				WC()->customer->set_billing_first_name( sanitize_text_field( $first_name ) );
+				WC()->customer->set_shipping_first_name( sanitize_text_field( $first_name ) );
 			}
-		}
 
-		// don't show add to cart restore when cart was recovered
-		WC()->session->set( 'metorik_seen_add_to_cart_form', true );
+			// Customer phone
+			if ( ! empty( $body->data->phone ) ) {
+				WC()->customer->set_billing_phone( sanitize_text_field( $body->data->phone ) );
+			}
+
+			WC()->customer->save();
+
+			// Client session
+			$session = $body->data->client_session;
+			if ( $session ) {
+				if ( isset( $session->applied_coupons ) ) {
+					$applied_coupons = (array) $session->applied_coupons;
+					WC()->session->set( 'applied_coupons', $this->valid_coupons( $applied_coupons ) );
+				}
+
+				if ( isset( $session->chosen_shipping_methods ) ) {
+					$chosen_shipping_methods = (array) $session->chosen_shipping_methods;
+					WC()->session->set( 'chosen_shipping_methods', $chosen_shipping_methods );
+				}
+
+				if ( isset( $session->shipping_method_counts ) ) {
+					$shipping_method_counts = (array) $session->shipping_method_counts;
+					WC()->session->set( 'shipping_method_counts', $shipping_method_counts );
+				}
+
+				if ( isset( $session->chosen_payment_method ) ) {
+					$chosen_payment_method = $session->chosen_payment_method;
+					WC()->session->set( 'chosen_payment_method', $chosen_payment_method );
+				}
+			}
+
+			// don't show add to cart restore when cart was recovered
+			WC()->session->set( 'metorik_seen_add_to_cart_form', true );
+		});
 	}
 
 	/**
