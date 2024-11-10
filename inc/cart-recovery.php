@@ -220,13 +220,25 @@ class Metorik_Cart_Recovery {
 
 			WC()->cart->empty_cart();
 
-			// set the variation to an empty array if it doesn't exist
-			// this is workaround for a php notice that can occur later when Woo pulls the cart
 			foreach ( $cart as $key => $cart_item ) {
+				// set the product data for each cart item
+				if ( ! isset( $cart_item['data'] ) ) {
+					$variationOrProductId = !empty( $cart_item['variation_id'] ) ? $cart_item['variation_id'] : $cart_item['product_id'];
+					if (!empty($variationOrProductId)) {
+						$product = wc_get_product( $variationOrProductId );
+						if ( ! empty( $product ) ) {
+							$cart_item['data'] = $product;
+						}
+					}
+				}
+
+				// set the variation to an empty array if it doesn't exist
+				// this is workaround for a php notice that can occur later when Woo pulls the cart
 				if ( ! isset( $cart_item['variation'] ) ) {
 					$cart_item['variation'] = [];
-					$cart[ $key ]           = $cart_item;
 				}
+
+				$cart[ $key ] = $cart_item;
 			}
 
 			// Restore cart
@@ -291,7 +303,7 @@ class Metorik_Cart_Recovery {
 
 			// don't show add to cart restore when cart was recovered
 			WC()->session->set( 'metorik_seen_add_to_cart_form', true );
-		});
+		} );
 	}
 
 	/**

@@ -4,7 +4,7 @@ Tags: woocommerce, woocommerce reports, woocommerce emails, woocommerce carts, w
 Requires at least: 5.0
 Requires PHP: 7.4
 Tested up to: 6.7.0
-Stable tag: 2.0.7
+Stable tag: 2.0.8
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -141,6 +141,9 @@ To hide the links from individual orders/products, you can click the 'Screen Opt
 To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes while logged in as an administrator.
 
 == Changelog ==
+= 2.0.8 =
+* Bug fix for cart recovery when the cart has a coupon attached.
+
 = 2.0.7 =
 * Minor improvements to cart tracking.
 
