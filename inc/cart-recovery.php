@@ -232,6 +232,12 @@ class Metorik_Cart_Recovery {
 					}
 				}
 
+				// if we can't get the cart item data, we have to remove it to avoid errors
+				if (empty($cart_item['data'])) {
+					unset($cart[ $key ]);
+					continue;
+				}
+
 				// set the variation to an empty array if it doesn't exist
 				// this is workaround for a php notice that can occur later when Woo pulls the cart
 				if ( ! isset( $cart_item['variation'] ) ) {
