@@ -222,7 +222,7 @@ class Metorik_Cart_Recovery {
 
 			foreach ( $cart as $key => $cart_item ) {
 				// set the product data for each cart item
-				if ( ! isset( $cart_item['data'] ) ) {
+				if ( empty( $cart_item['data'] ) || ! is_callable([$cart_item['data'],'get_price']) ) {
 					$variationOrProductId = !empty( $cart_item['variation_id'] ) ? $cart_item['variation_id'] : $cart_item['product_id'];
 					if (!empty($variationOrProductId)) {
 						$product = wc_get_product( $variationOrProductId );
@@ -232,8 +232,9 @@ class Metorik_Cart_Recovery {
 					}
 				}
 
-				// if we can't get the cart item data, we have to remove it to avoid errors
-				if (empty($cart_item['data'])) {
+				// if we can't get the cart item data or if it has no price
+				// remove it, otherwise we hit errors later
+				if (empty($cart_item['data']) || ! is_callable([$cart_item['data'],'get_price'])) {
 					unset($cart[ $key ]);
 					continue;
 				}
