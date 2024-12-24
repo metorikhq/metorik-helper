@@ -4,12 +4,12 @@
  * Plugin Name: Metorik Helper
  * Plugin URI: https://metorik.com
  * Description: Reports, integrations, automatic emails, and cart tracking for WooCommerce stores.
- * Version: 2.0.8
+ * Version: 2.0.9
  * Author: Metorik
  * Author URI: https://metorik.com
  * Text Domain: metorik
  * WC requires at least: 4.0.0
- * WC tested up to: 9.3.3
+ * WC tested up to: 9.5.1
  * Requires Plugins: woocommerce
  * Requires at least: 5.0
  * Requires PHP: 7.4
@@ -18,7 +18,7 @@ class Metorik_Helper {
 	/**
 	 * Current version of Metorik.
 	 */
-	public $version = '2.0.8';
+	public $version = '2.0.9';
 
 	/**
 	 * URL dir for plugin.
@@ -50,6 +50,7 @@ class Metorik_Helper {
 	 */
 	public function __construct() {
 		add_action( 'plugins_loaded', [ $this, 'init' ] );
+		add_action( 'init', [ $this, 'load_text_domain' ] );
 
 		// Set URL
 		$this->url = plugin_dir_url( __FILE__ );
@@ -60,8 +61,8 @@ class Metorik_Helper {
 	 */
 	public function init() {
 		if ( class_exists( 'WooCommerce' ) ) {
-			// Woo HPOS compatibility
 			add_action( 'before_woocommerce_init', function () {
+				// Woo HPOS compatibility
 				if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
 					\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
 				}
@@ -90,8 +91,9 @@ class Metorik_Helper {
 		} else {
 			add_action( 'admin_notices', [ $this, 'no_wc' ] );
 		}
+	}
 
-		// Plugin textdomain
+	public function load_text_domain() {
 		load_plugin_textdomain( 'metorik', false, basename( dirname( __FILE__ ) ) . '/languages/' );
 	}
 

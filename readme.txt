@@ -3,8 +3,8 @@ Contributors: bryceadams, jkudish, metorik
 Tags: woocommerce, woocommerce reports, woocommerce emails, woocommerce carts, woocommerce export
 Requires at least: 5.0
 Requires PHP: 7.4
-Tested up to: 6.7.0
-Stable tag: 2.0.8
+Tested up to: 6.7.1
+Stable tag: 2.0.9
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -141,6 +141,10 @@ To hide the links from individual orders/products, you can click the 'Screen Opt
 To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes while logged in as an administrator.
 
 == Changelog ==
+= 2.0.9 =
+* Bug fix for cart recovery when the cart contains an invalid product.
+* Update plugin translation loading hook to `init` as per WP 6.7+ guidelines.
+
 = 2.0.8 =
 * Bug fix for cart recovery when the cart has a coupon attached.
 
