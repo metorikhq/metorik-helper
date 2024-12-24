@@ -50,6 +50,7 @@ class Metorik_Helper {
 	 */
 	public function __construct() {
 		add_action( 'plugins_loaded', [ $this, 'init' ] );
+		add_action( 'init', [ $this, 'load_text_domain' ] );
 
 		// Set URL
 		$this->url = plugin_dir_url( __FILE__ );
@@ -60,8 +61,8 @@ class Metorik_Helper {
 	 */
 	public function init() {
 		if ( class_exists( 'WooCommerce' ) ) {
-			// Woo HPOS compatibility
 			add_action( 'before_woocommerce_init', function () {
+				// Woo HPOS compatibility
 				if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
 					\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
 				}
@@ -90,8 +91,9 @@ class Metorik_Helper {
 		} else {
 			add_action( 'admin_notices', [ $this, 'no_wc' ] );
 		}
+	}
 
-		// Plugin textdomain
+	public function load_text_domain() {
 		load_plugin_textdomain( 'metorik', false, basename( dirname( __FILE__ ) ) . '/languages/' );
 	}
 

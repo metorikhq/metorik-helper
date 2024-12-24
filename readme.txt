@@ -143,6 +143,7 @@ To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes wh
 == Changelog ==
 = 2.0.9 =
 * Bug fix for cart recovery when the cart contains an invalid product.
+* Update plugin translation loading hook to `init` as per WP 6.7+ guidelines.
 
 = 2.0.8 =
 * Bug fix for cart recovery when the cart has a coupon attached.
