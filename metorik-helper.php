@@ -9,7 +9,7 @@
  * Author URI: https://metorik.com
  * Text Domain: metorik
  * WC requires at least: 4.0.0
- * WC tested up to: 9.4.3
+ * WC tested up to: 9.5.1
  * Requires Plugins: woocommerce
  * Requires at least: 5.0
  * Requires PHP: 7.4
