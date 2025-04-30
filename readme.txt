@@ -143,7 +143,7 @@ To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes wh
 == Changelog ==
 = 2.0.10 =
 * Return 404 for subscriptions API endpoints when the WC Subscriptions plugin isn't active.
-* Fix a text domain notice
+* Fix a text domain notice.
 
 = 2.0.9 =
 * Bug fix for cart recovery when the cart contains an invalid product.
