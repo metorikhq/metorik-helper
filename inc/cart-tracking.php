@@ -63,7 +63,9 @@ class Metorik_Cart_Tracking {
 		// ================
 
 		// register block checkout fields
-		add_action( 'woocommerce_blocks_loaded', [ $this, 'register_block_checkout_fields' ] );
+		add_action( 'woocommerce_blocks_loaded', function () {
+			add_action( 'init', [ $this, 'register_block_checkout_fields' ], 20 );
+		} );
 
 		// remove the opt-in field from the account page - we only want it on checkout
 		add_filter( 'woocommerce_edit_account_form_fields', [ $this, 'deregister_optin_on_account_page' ], 1 );

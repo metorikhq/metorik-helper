@@ -4,7 +4,7 @@ Tags: woocommerce, woocommerce reports, woocommerce emails, woocommerce carts, w
 Requires at least: 5.0
 Requires PHP: 7.4
 Tested up to: 6.8
-Stable tag: 2.0.9
+Stable tag: 2.0.10
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -141,6 +141,10 @@ To hide the links from individual orders/products, you can click the 'Screen Opt
 To get them back, go to http://yoursite.com/wp-admin?show-metorik-notices=yes while logged in as an administrator.
 
 == Changelog ==
+= 2.0.10 =
+* Return 404 for subscriptions API endpoints when the WC Subscriptions plugin isn't active.
+* Fix a text domain notice
+
 = 2.0.9 =
 * Bug fix for cart recovery when the cart contains an invalid product.
 * Update plugin translation loading hook to `init` as per WP 6.7+ guidelines.
