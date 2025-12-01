@@ -3,7 +3,7 @@ Contributors: bryceadams, jkudish, metorik
 Tags: woocommerce, woocommerce reports, woocommerce emails, woocommerce carts, woocommerce export
 Requires at least: 5.0
 Requires PHP: 7.4
-Tested up to: 6.8
+Tested up to: 6.9
 Stable tag: 2.0.10
 License: MIT
 License URI: https://opensource.org/licenses/MIT
