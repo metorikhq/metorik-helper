@@ -288,23 +288,23 @@ class Metorik_Helper_API_Orders extends WC_REST_Posts_Controller
      */
     public function remove_coupon_line_items_meta($response, $post, $request)
     {
-        // check for metorik user agent before continuing
-        if (metorik_check_headers_agent($request->get_headers($_SERVER))) {
-            // get response data
-            $_data = $response->data;
-
-            if (isset($_data['coupon_lines']) && count($_data['coupon_lines'])) {
-                // remove meta each line item from response
-                foreach ($_data['coupon_lines'] as $key => $line) {
-                    unset($_data['coupon_lines'][$key]['meta_data']);
-                }
-            }
-
-            // set response
-            $response->data = $_data;
+        if (!($response instanceof WP_REST_Response) || !metorik_check_headers_agent($request->get_headers($_SERVER))) {
+            return $response;
         }
 
-        // return response
+        $data = $response->get_data();
+        if (!is_array($data) || !isset($data['coupon_lines']) || !is_array($data['coupon_lines'])) {
+            return $response;
+        }
+
+        foreach ($data['coupon_lines'] as $key => $line) {
+            if (is_array($line)) {
+                unset($data['coupon_lines'][$key]['meta_data']);
+            }
+        }
+
+        $response->set_data($data);
+
         return $response;
     }
 

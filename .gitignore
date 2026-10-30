@@ -4,9 +4,8 @@
 ._*
 .idea
 
-# Tests - local only
+# Local WordPress test environment
 .github
 /wp-content
 /wp
-/tests
 .phpunit.result.cache
